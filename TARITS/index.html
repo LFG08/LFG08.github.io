@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>There Are Rivers in the Sky</title>
+
+<style>
+
+/* ================= MANDALA ================= */
+
+.container{
+position:relative;
+width:2048px;
+height:2048px;
+contain:layout paint;
+transition:transform 0.25s ease;
+}
+
+.container img{
+position:absolute;
+top:0;
+left:0;
+}
+
+/* ================= ANSWER OVERLAY ================= */
+
+#answersOverlay{
+position:absolute;
+top:0;
+left:0;
+width:2048px;
+height:2048px;
+pointer-events:none;
+}
+
+.answerClip{
+position:absolute;
+top:0;
+left:0;
+width:2048px;
+height:2048px;
+
+background-image:url("mandala_gabarito_1.png");
+background-size:2048px 2048px;
+
+opacity:0;
+transition:opacity 0.12s linear;
+}
+
+.answerClip.visible{
+opacity:1;
+}
+
+/* ================= BACKGROUND ================= */
+
+body{
+background:rgb(0, 24,40);
+margin:0;
+overflow:auto;
+cursor:grab;
+user-select:none;
+}
+
+body.dragging{
+cursor:grabbing;
+}
+
+/* ================= MENU ================= */
+
+#wordMenu{
+position:fixed;
+top:120px;
+right:30px;
+left:30px;
+width:180px;
+
+max-height:70vh;
+
+background:rgba(0,0,0,0.418);
+border:1px solid white;
+color:white;
+
+font-family:'Times New Roman', Times, serif;
+font-size:0.9rem;
+
+display:flex;
+flex-direction:column;
+z-index:20;
+}
+
+#menuHeader{
+padding:8px;
+cursor:move;
+justify-content:space-between;
+border-bottom:1px solid white;
+
+display: flex;
+align-items: center;
+gap: 8px; /* controls the space */
+}
+
+#wordList{
+flex:1;
+overflow-y:auto;
+
+list-style:none;
+margin:0;
+padding:8px;
+line-height:1.4;
+}
+
+#wordList li{
+padding:4px 0;
+}
+
+.found{
+text-decoration:line-through;
+opacity:0.6;
+}
+
+.collapsed #wordList{
+display:none;
+}
+
+#overlaySelector,
+#clearButton,
+#toggleClickMode,
+#rotateMandala{
+
+border:none;
+border-top:1px solid white;
+
+background:rgba(0,0,0,0.418);
+color:white;
+
+padding:8px;
+font-family:'Times New Roman', Times, serif;
+cursor:pointer;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- ================= MENU ================= -->
+
+<div id="wordMenu">
+
+<div id="menuHeader">
+<span>There are Rivers 
+  In the Sky</span>
+<span id="counter">0 / 20</span>
+<button id="toggleMenu">–</button>
+</div>
+
+<ul id="wordList">
+
+<li id="menu-Agua">Água</li>
+<li id="menu-Arthur">Arthur</li>
+<li id="menu-Assiria">Assíria</li>
+<li id="menu-Assiriologista">Assiriologista</li>
+<li id="menu-Assurbanipal">Assurbanípal</li>
+<li id="menu-Ayn Sifna">Ayn Sifna</li>
+<li id="menu-Cuneiforme">Cuneiforme</li>
+<li id="menu-Kanun">Kanun</li>
+<li id="menu-Lalish">Lalish</li>
+<li id="menu-Lamassu">Lamassu</li>
+<li id="menu-LapisLazuli">Lápis-lazúli</li>
+<li id="menu-Londres">Londres</li>
+<li id="menu-Mosul">Mosul</li>
+<li id="menu-Narin">Narin</li>
+<li id="menu-Nineveh">Nineveh</li>
+<li id="menu-RioTigre">Rio tigre</li>
+<li id="menu-Shekhan">Shekhan</li>
+<li id="menu-Tablete argila">Tablete argila</li>
+<li id="menu-Yazidis">Yazidis</li>
+<li id="menu-Zaleekhah">Zaleekhah</li>
+
+
+</ul>
+
+<button id="clearButton" onclick="confirmReset()">Reset</button>
+<button id="toggleClickMode">Desmarcar: ON</button>
+<button id="rotateMandala">Rotate (0°)</button>
+
+<select id="overlaySelector">
+<option value="mandala_gabarito_1.png">Roxo</option>
+<option value="mandala_gabarito_2.png">Dourado</option>
+</select>
+
+</div>
+
+<!-- ================= MANDALA ================= -->
+
+<div class="container">
+
+<img src="mandala.png" usemap="#image-map">
+
+<div id="answersOverlay"></div>
+
+</div>
+
+<!-- ================= IMAGE MAP ================= https://www.image-map.net/ -->
+
+<map name="image-map">
+
+<area coords="1673,849,1702,831,1738,869,1713,887" shape="poly" onclick="toggleAnswer(this,'Agua');return false;">
+<area coords="1300,786,1329,768,1369,833,1335,847" shape="poly" onclick="toggleAnswer(this,'Arthur');return false;">
+<area coords="12,1160,37,1160,30,1109,12,1107" shape="poly" onclick="toggleAnswer(this,'Assiria');return false;">
+<area coords="925,1996,901,1985,978,1906,989,1921" shape="poly" onclick="toggleAnswer(this,'Assiriologista');return false;">
+<area coords="1452,3,1441,28,1546,83,1559,66" shape="poly" onclick="toggleAnswer(this,'Assurbanipal');return false;">
+<area coords="664,167,673,183,695,185,720,196,774,171,778,153,753,133,737,135,710,140,713,140,702,148,710,140" shape="poly" onclick="toggleAnswer(this,'Ayn Sifna');return false;">
+<area coords="1269,1733,1268,1765,1193,1758,1183,1738" shape="poly" onclick="toggleAnswer(this,'Cuneiforme');return false;">
+<area coords="1537,1326,1510,1323,1521,1274,1550,1275" shape="poly" onclick="toggleAnswer(this,'Kanun');return false;">
+<area coords="638,779,660,789,681,732,660,728" shape="poly" onclick="toggleAnswer(this,'Lalish');return false;">
+<area coords="903,1614,916,1592,841,1564,841,1584" shape="poly" onclick="toggleAnswer(this,'Lamassu');return false;">
+<area coords="1624,1564,1644,1553,1669,1578,1655,1604" shape="poly" onclick="toggleAnswer(this,'LapisLazuli');return false;">
+<area coords="2020,1371,2024,1405,1980,1421,1971,1403" shape="poly" onclick="toggleAnswer(this,'Londres');return false;">
+<area coords="1496,2034,1514,2047,1434,2047,1432,2034,1450,2034" shape="poly" onclick="toggleAnswer(this,'Mosul');return false;">
+<area coords="524,1127,542,1142,529,1192,504,1185" shape="poly" onclick="toggleAnswer(this,'Narin');return false;">
+<area coords="1398,261,1409,248,1436,280,1423,291" shape="poly" onclick="toggleAnswer(this,'Nineveh');return false;">
+<area coords="461,42,488,51,508,13,488,2" shape="poly" onclick="toggleAnswer(this,'RioTigre');return false;">
+<area coords="1952,467,1928,482,1894,431,1915,413" shape="poly" onclick="toggleAnswer(this,'Shekhan');return false;">
+<area coords="316,1856,329,1840,200,1717,184,1730" shape="poly" onclick="toggleAnswer(this,'Tablete argila');return false;">
+<area coords="271,735,303,742,323,697,294,681" shape="poly" onclick="toggleAnswer(this,'Yazidis');return false;">
+<area coords="428,1379,443,1372,437,1345,414,1332,390,1329,399,1358,412,1376" shape="poly" onclick="toggleAnswer(this,'Zaleekhah');return false;">
+
+
+
+</map>
+
+<!-- ================= SCRIPT ================= -->
+
+<script>
+
+/*counter*/
+function updateCounter(){
+
+let found = document.querySelectorAll("#wordList li.found").length;
+let total = document.querySelectorAll("#wordList li").length;
+
+document.getElementById("counter").textContent =
+found + " / " + total;
+
+  /* PUZZLE COMPLETE MESSAGE */
+
+if(found === total && total > 0){
+
+setTimeout(function(){
+alert("fim! 🎉🎉");
+},200);
+}
+}
+
+window.addEventListener("load", updateCounter);
+
+/* prevent image dragging */
+
+document.addEventListener("dragstart", e=>e.preventDefault());
+
+/* ===== toggle mode ===== */
+
+let allowToggleOff=true;
+
+toggleClickMode.onclick=function(){
+
+allowToggleOff=!allowToggleOff;
+
+this.textContent=allowToggleOff
+? "Desmarcar: ON"
+: "Desmarcar: OFF";
+
+};
+
+/* ==== gabaritos ====*/
+let currentOverlay = "mandala_gabarito_1.png";
+
+/* ===== menu items ===== */
+
+const menuItems={};
+
+document.querySelectorAll("#wordList li").forEach(li=>{
+menuItems[li.id]=li;
+});
+
+/* ===== answer highlights ===== */
+
+const answerClips={};
+
+function toggleAnswer(area,word){
+
+if(!area.coords) return;
+
+if(!answerClips[word]){
+
+let coords=area.coords.split(",");
+let points=[];
+
+for(let i=0;i<coords.length;i+=2){
+points.push(coords[i]+"px "+coords[i+1]+"px");
+}
+
+let clip = document.createElement("div");
+clip.className = "answerClip";
+clip.style.clipPath = "polygon(" + points.join(",") + ")";
+clip.style.backgroundImage = "url('" + currentOverlay + "')";
+
+
+answersOverlay.appendChild(clip);
+
+answerClips[word]=clip;
+
+
+}
+
+if(!answerClips[word].classList.contains("visible")){
+
+answerClips[word].classList.add("visible");
+
+}else if(allowToggleOff){
+
+answerClips[word].classList.remove("visible");
+
+}
+
+menuItems["menu-"+word].classList.toggle("found");
+updateCounter();
+saveProgress();
+
+
+/* overlay */
+overlaySelector.onchange = function(){
+
+currentOverlay = this.value;
+
+Object.values(answerClips).forEach(clip=>{
+clip.style.backgroundImage = "url('" + currentOverlay + "')";
+});
+
+};
+
+/* SAVE PROGRESS */
+saveProgress();
+
+}
+
+/* ===== reset ===== */
+
+function clearAll(){
+
+for(let word in answerClips){
+answerClips[word].classList.remove("visible");
+}
+
+document.querySelectorAll("#wordList li")
+.forEach(li=>li.classList.remove("found"));
+
+localStorage.removeItem("unrealPuzzleProgress");
+updateCounter();
+}
+
+function confirmReset(){
+
+if(confirm("Reset?")){
+clearAll();
+localStorage.removeItem("unrealPuzzleProgress");
+}
+
+  }
+
+/* ===== menu drag ===== */
+
+let menu=wordMenu;
+let header=menuHeader;
+
+let offsetX,offsetY,dragging=false;
+
+header.onmousedown=e=>{
+dragging=true;
+offsetX=e.clientX-menu.offsetLeft;
+offsetY=e.clientY-menu.offsetTop;
+};
+
+document.onmousemove=e=>{
+if(!dragging) return;
+menu.style.left=(e.clientX-offsetX)+"px";
+menu.style.top=(e.clientY-offsetY)+"px";
+};
+
+document.onmouseup=()=>dragging=false;
+
+/* ===== collapse menu ===== */
+
+toggleMenu.onclick=()=>wordMenu.classList.toggle("collapsed");
+
+/* ===== rotate mandala ===== */
+
+let rotation=0;
+
+rotateMandala.onclick=function(){
+
+rotation=(rotation+90)%360;
+
+document.querySelector(".container")
+.style.transform="rotate("+rotation+"deg)";
+
+this.textContent="Rotate ("+rotation+"°)";
+
+};
+
+/* ===== drag scroll ===== */
+
+let isDragging=false,startX,startY,scrollLeft,scrollTop;
+
+document.addEventListener("mousedown",e=>{
+
+if(e.target.closest("#wordMenu")) return;
+
+isDragging=true;
+document.body.classList.add("dragging");
+
+startX=e.clientX;
+startY=e.clientY;
+
+scrollLeft=window.scrollX;
+scrollTop=window.scrollY;
+
+});
+
+document.addEventListener("mousemove",e=>{
+
+if(!isDragging) return;
+
+window.scrollTo(
+scrollLeft-(e.clientX-startX),
+scrollTop-(e.clientY-startY)
+);
+
+});
+
+document.addEventListener("mouseup",()=>{
+isDragging=false;
+document.body.classList.remove("dragging");
+});
+
+/* ===== save ===== */
+
+function saveProgress(){
+
+localStorage.setItem(
+"unrealPuzzleProgress",
+JSON.stringify(Object.keys(answerClips)
+.filter(w => answerClips[w].classList.contains("visible")))
+);
+
+}
+
+function loadProgress(){
+
+let saved = localStorage.getItem("unrealPuzzleProgress");
+
+if(!saved) return;
+
+let words = JSON.parse(saved);
+
+words.forEach(word => {
+
+let area = document.querySelector(
+`area[onclick*="${word}"]`
+);
+
+if(area){
+toggleAnswer(area, word);
+}
+
+});
+
+}
+
+window.addEventListener("load", loadProgress);
+
+
+
+</script>
+
+<script src="https://unpkg.com/image-map-resizer/js/imageMapResizer.min.js"></script>
+<script>imageMapResize();</script>
+
+</body>
+</html>
