@@ -73,7 +73,7 @@ position:fixed;
 top:120px;
 right:30px;
 left:30px;
-width:180px;
+width:210px;
 
 max-height:70vh;
 
@@ -98,6 +98,82 @@ border-bottom:1px solid white;
 display: flex;
 align-items: center;
 gap: 8px; /* controls the space */
+}
+
+#counter{
+  white-space: nowrap; /* prevents breaking like 0 / 20 */
+}
+
+
+/* ================= INFO ================= */
+
+.info-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.info-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 6px; /* invisible bridge */
+}
+
+.info-btn {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+  font-size: 11px;
+  cursor: pointer;
+  background: #ccc;
+  line-height: 16px;
+  padding: 0;
+  margin-right: 8px;
+}
+
+.tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 180px;
+  margin-top: 4px; /* small, safe gap */
+
+  background: rgba(0,0,0,0.85);
+  color: white;
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 6px;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+
+/* show tooltip when hovering button OR tooltip itself */
+.info-wrapper:hover .tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  
+}
+
+.tooltip a {
+  text-decoration: none;
+}
+
+.tooltip a:hover {
+  text-decoration: none; /* optional: add back on hover */
+}
+
+.highlight {
+  color: #03d626;
+  text-decoration: none
+}
+
+.highlight:hover{
+  text-decoration: none;
 }
 
 #wordList{
@@ -151,8 +227,17 @@ cursor:pointer;
 <div id="wordMenu">
 
 <div id="menuHeader">
-<span>Vibe Vegana</span>
+<span>🍃Vibe Vegana</span>
 <span id="counter">0 / 25</span>
+  
+<span class="info-wrapper">
+    <button class="info-btn">i</button>
+
+    <span class="tooltip">
+      Mandala e Caça-Palavras inspirados em... pasmem... <a class=highlight>plantas</a>... majoritariamente verdes 🌿 . 
+    </span>
+  </span>
+  
 <button id="toggleMenu">–</button>
 </div>
 
