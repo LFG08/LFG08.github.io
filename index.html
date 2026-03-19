@@ -96,12 +96,14 @@ background:#5c2208;
 font-size:12px;
 margin-top:8px;
 opacity:0.7;
+color:#f5e6d3;
 }
 
 .status{
 font-size:12px;
 margin-top:6px;
 opacity:0.8;
+color:#9ad69a;
 }
 
 </style>
@@ -160,12 +162,15 @@ data-total="25">
 
 </div>
 <script>
-  window.addEventListener("load", function(){
+window.addEventListener("load", function(){
 
 document.querySelectorAll(".card").forEach(card => {
 
 let key = card.dataset.key;
 let total = parseInt(card.dataset.total);
+
+/* SKIP cards without progress data */
+if(!key || !total) return;
 
 let data = JSON.parse(localStorage.getItem(key) || "[]");
 
