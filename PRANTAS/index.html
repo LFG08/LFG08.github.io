@@ -481,6 +481,8 @@ Object.values(answerClips).forEach(clip=>{
 clip.style.backgroundImage = "url('" + currentOverlay + "')";
 });
 
+localStorage.setItem("selectedOverlay", currentOverlay);
+
 };
 
 /* SAVE PROGRESS */
@@ -623,7 +625,20 @@ toggleAnswer(area, word);
 
 window.addEventListener("load", loadProgress);
 
+window.addEventListener("load", function(){
 
+let savedOverlay = localStorage.getItem("selectedOverlay");
+
+if(savedOverlay){
+
+currentOverlay = savedOverlay;
+
+/* update selector UI */
+overlaySelector.value = savedOverlay;
+
+}
+
+});
 
 </script>
 
