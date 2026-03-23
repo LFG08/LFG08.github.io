@@ -70,47 +70,52 @@ cursor:grabbing;
 /* ================= MENU ================= */
 
 #wordMenu{
-position:fixed;
-top:120px;
-right:30px;
-left:30px;
-width:220px;
+  position:fixed;
+  top:120px;
+  left:30px;   /* ← anchor it here */
+  width: 250px;;
 
-max-height:70vh;
+  max-height:70vh;
 
-background:rgba(0,0,0,0.418);
-border:1px solid white;
-color:white;
+  background:rgba(0,0,0,0.418);
+  border:1px solid white;
+  color:white;
 
-font-family:'Times New Roman', Times, serif;
-font-size:0.9rem;
+  font-family:'Times New Roman', Times, serif;
+  font-size:0.9rem;
 
-display:flex;
-flex-direction:column;
-z-index:20;
+  display:flex;
+  flex-direction:column;
+  z-index:20;
 }
 
 #menuHeader{
-padding:8px;
-cursor:move;
-justify-content:space-between;
-border-bottom:1px solid white;
-
-display: flex;
-align-items: center;
-gap: 8px; /* controls the space */
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+}
+/* LEFT SIDE */
+.title {
+  flex-shrink:inherit;
+  margin-right: 4px;
+  margin-left: 8px;
+  margin-top: 8px;
 }
 
-#menuHeader .title {
+/* RIGHT SIDE GROUP */
+.right{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-shrink:0; /* prevents collapsing weirdness */
+  margin-right: 8px;
+}
+
+/* COUNTER */
+#counter {
   white-space: nowrap;
-  flex-shrink: 0;
 }
-
-#counter{
-  white-space: nowrap; /* prevents breaking like 0 / 20 */
-  margin-left: auto;
-}
-
 
 /* ================= INFO ================= */
 
@@ -128,7 +133,13 @@ gap: 8px; /* controls the space */
   height: 6px; /* invisible bridge */
 }
 
-.info-btn {
+.info-btn,
+.menu-btn{
+  
+  display: flex;              /* KEY */
+  align-items: center;        /* vertical center */
+  justify-content: center;    /* horizontal center */
+  
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -138,7 +149,7 @@ gap: 8px; /* controls the space */
   background: #ccc;
   line-height: 16px;
   padding: 0;
-  margin-right: 8px;
+  margin-right: 4px;
 }
 
 .tooltip {
@@ -235,8 +246,10 @@ cursor:pointer;
 
 <div id="menuHeader">
 <span class= "title">🍃Vibe Vegana</span>
-<span id="counter">0 / 25</span>
-  
+
+<div class="right">
+<span id="counter"></span>
+
 <span class="info-wrapper">
     <button class="info-btn">i</button>
 
@@ -245,9 +258,11 @@ cursor:pointer;
     </span>
   </span>
   
-<button id="toggleMenu">–</button>
+  <a class="menu-btn" href="/" >☰</a>
+  <button id="toggleMenu">–</button>
 </div>
-
+</div>
+  
 <ul id="wordList">
 
 <li id="menu-Aglaonema">Aglaonema</li>
@@ -278,6 +293,8 @@ cursor:pointer;
 
 </ul>
 
+<div id="wordTooltip"></div>
+  
 <button id="clearButton" onclick="confirmReset()">Reset</button>
 <button id="toggleClickMode">Desmarcar: ON</button>
 <button id="rotateMandala">Rotate (0°)</button>
