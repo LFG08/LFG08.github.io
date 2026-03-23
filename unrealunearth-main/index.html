@@ -418,36 +418,36 @@ document.addEventListener("dragstart", e=>e.preventDefault());
 
 /* load */
 window.addEventListener("load", function(){
+
+/* ===== hidden words: show ???? ===== */
+document.querySelectorAll(".hidden-word").forEach(li => {
+
+let word = li.dataset.hidden;
+li.textContent = "?".repeat(word.length);
+
+});
+
 updateCounter();
 
 /* restore overlay OR set default */
-const overlaySelector = document.getElementById("overlaySelector");
-  let savedOverlay = localStorage.getItem("selectedOverlay");
+let savedOverlay = localStorage.getItem("selectedOverlay");
 
-  // restore or default
-  if(savedOverlay){
-    overlaySelector.value = savedOverlay;
-  } else {
-    overlaySelector.selectedIndex = 0;
-  }
+if(savedOverlay){
+  currentOverlay = savedOverlay;
+  overlaySelector.value = savedOverlay;
+}else{
+  // FIRST TIME → force option 1
+  currentOverlay = "unreal_gabarito_1.png";
+  overlaySelector.value = "unreal_gabarito_1.png";
+}
+  
+/* apply overlay immediately */
+overlaySelector.dispatchEvent(new Event("change"));
 
-  // sync variable
-  currentOverlay = overlaySelector.value;
-
-  // apply immediately
-  updateOverlay();
-
-  // keep everything in sync on change
-  overlaySelector.addEventListener("change", function(){
-    currentOverlay = this.value;
-    localStorage.setItem("selectedOverlay", currentOverlay);
-    updateOverlay();
-  });
-
-  // load progress AFTER overlay is ready
-  loadProgress();
+/* load answers AFTER overlay is ready */
+updateOverlay();
+loadProgress();
 });
-
 /* ===== toggle mode ===== */
 
 let allowToggleOff=true;
