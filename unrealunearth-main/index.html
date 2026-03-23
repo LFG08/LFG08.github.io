@@ -418,15 +418,6 @@ document.addEventListener("dragstart", e=>e.preventDefault());
 
 /* load */
 window.addEventListener("load", function(){
-
-/* ===== hidden words: show ???? ===== */
-document.querySelectorAll(".hidden-word").forEach(li => {
-
-let word = li.dataset.hidden;
-li.textContent = "?".repeat(word.length);
-
-});
-
 updateCounter();
 
 /* restore overlay OR set default */
@@ -445,9 +436,9 @@ if(savedOverlay){
 overlaySelector.dispatchEvent(new Event("change"));
 
 /* load answers AFTER overlay is ready */
-updateOverlay();
 loadProgress();
 });
+  
 /* ===== toggle mode ===== */
 
 let allowToggleOff=true;
