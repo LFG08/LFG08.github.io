@@ -421,24 +421,32 @@ window.addEventListener("load", function(){
 updateCounter();
 
 /* restore overlay OR set default */
-let savedOverlay = localStorage.getItem("selectedOverlay");
+const overlaySelector = document.getElementById("overlaySelector");
+  let savedOverlay = localStorage.getItem("selectedOverlay");
 
-if(savedOverlay){
-  currentOverlay = savedOverlay;
-  overlaySelector.value = savedOverlay;
-}else{
-  // FIRST TIME → force option 1
-  currentOverlay = "unreal_gabarito_1.png";
-  overlaySelector.value = "unreal_gabarito_1.png";
-}
-  
-/* apply overlay immediately */
-overlaySelector.dispatchEvent(new Event("change"));
+  // restore or default
+  if(savedOverlay){
+    overlaySelector.value = savedOverlay;
+  } else {
+    overlaySelector.selectedIndex = 0;
+  }
 
-/* load answers AFTER overlay is ready */
-loadProgress();
+  // sync variable
+  currentOverlay = overlaySelector.value;
+
+  // apply immediately
+  updateOverlay();
+
+  // keep everything in sync on change
+  overlaySelector.addEventListener("change", function(){
+    currentOverlay = this.value;
+    localStorage.setItem("selectedOverlay", currentOverlay);
+    updateOverlay();
+  });
+
+  // load progress AFTER overlay is ready
+  loadProgress();
 });
-
 
 /* ===== toggle mode ===== */
 
