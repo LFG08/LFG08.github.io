@@ -436,6 +436,7 @@ if(savedOverlay){
 overlaySelector.dispatchEvent(new Event("change"));
 
 /* load answers AFTER overlay is ready */
+updateOverlay();
 loadProgress();
 });
   
