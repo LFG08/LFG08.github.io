@@ -544,7 +544,7 @@ alert("fim! 🎉🎉");
 
 function loadProgress(){
 
-let saved = localStorage.getItem("unrealPuzzleProgress");
+let saved = localStorage.getItem("unrealPuzzleProgressTESTE");
 if(!saved) return;
 
 let words = JSON.parse(saved);
@@ -578,7 +578,7 @@ answerClips[word].classList.remove("visible");
 document.querySelectorAll("#wordList li")
 .forEach(li=>li.classList.remove("found"));
 
-localStorage.removeItem("unrealPuzzleProgress");
+localStorage.removeItem("unrealPuzzleProgressTESTE");
 updateCounter();
 }
 
@@ -586,7 +586,7 @@ function confirmReset(){
 
 if(confirm("Reset?")){
 clearAll();
-localStorage.removeItem("unrealPuzzleProgress");
+localStorage.removeItem("unrealPuzzleProgressTESTE");
 }
 
   }
@@ -671,7 +671,7 @@ document.body.classList.remove("dragging");
 function saveProgress(){
 
 localStorage.setItem(
-"unrealPuzzleProgress",
+"unrealPuzzleProgressTESTE",
 JSON.stringify(Object.keys(answerClips)
 .filter(w => answerClips[w].classList.contains("visible")))
 );
