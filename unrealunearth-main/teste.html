@@ -419,33 +419,26 @@ document.addEventListener("dragstart", e=>e.preventDefault());
 /* load */
 window.addEventListener("load", function(){
 
-  const overlaySelector = document.getElementById("overlaySelector");
-  updateCounter();
+updateCounter();
 
-  /* restore overlay OR set default */
-  let savedOverlay = localStorage.getItem("selectedOverlay");
+/* restore overlay OR set default */
+let savedOverlay = localStorage.getItem("selectedOverlay");
 
-  if(savedOverlay){
-    overlaySelector.value = savedOverlay;
-  } else {
-    overlaySelector.value = "mandala_gabarito_1.png";
-  }
+if(savedOverlay){
+  currentOverlay = savedOverlay;
+  overlaySelector.value = savedOverlay;
+}else{
+  // FIRST TIME → force option 1
+  currentOverlay = "unreal_gabarito_1.png";
+  overlaySelector.selectedIndex = 0;
+}
+  
+/* apply overlay immediately */
+overlaySelector.dispatchEvent(new Event("change"));
 
-  /* sync variable ONCE */
-  currentOverlay = overlaySelector.value;
-
-  /* apply overlay FIRST */
-  updateOverlay();
-
-  /* keep in sync when user changes */
-  overlaySelector.addEventListener("change", function(){
-    currentOverlay = this.value;
-    localStorage.setItem("selectedOverlay", this.value);
-    updateOverlay();
-  });
-
-  /* load answers AFTER overlay is ready */
-  loadProgress();
+/* load answers AFTER overlay is ready */
+updateOverlay();
+loadProgress();
 });
   
 /* ===== toggle mode ===== */
