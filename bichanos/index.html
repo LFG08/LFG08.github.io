@@ -42,7 +42,7 @@ left:0;
 width:2048px;
 height:2048px;
 
-background-image:url("mandala_gabarito_1.png");
+background-image:url("mandala_gabarito_2.png");
 background-size:2048px 2048px;
 
 opacity:0;
@@ -336,8 +336,8 @@ cursor:pointer;
 <button id="rotateMandala">Rotate (0°)</button>
 
 <select id="overlaySelector">
+<option value="mandala_gabarito_2.png">Roxo</option>
 <option value="mandala_gabarito_1.png">Azul</option>
-<option value="mandala_gabarito_2.png">Rosa</option>
 <option value="mandala_gabarito_3.png">Verde</option>
 </select>
 
@@ -531,8 +531,8 @@ if(savedOverlay){
   overlaySelector.value = savedOverlay;
 }else{
   // FIRST TIME → force option 1
-  currentOverlay = "mandala_gabarito_1.png";
-  overlaySelector.value = "mandala_gabarito_1.png";
+  currentOverlay = "mandala_gabarito_2.png";
+  overlaySelector.value = "mandala_gabarito_2.png";
 }
   
 /* apply overlay immediately */
