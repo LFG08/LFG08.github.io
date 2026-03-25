@@ -316,8 +316,9 @@ cursor:pointer;
 <map name="image-map">
 
 <area coords="1329,781,1351,767,1383,821,1365,828" 
+data-word="Hozier"
 shape="poly"
-onclick="toggleAnswer(this,'Hozier');return false;">
+onclick="toggleAnswer(this);return false;">
 
 <area coords="318,657,330,678,349,697,367,682,381,655,399,626,414,604,392,599,359,595,358,635" 
 shape="poly"
@@ -480,7 +481,7 @@ menuItems[li.id]=li;
 const answerClips={};
 
 function toggleAnswer(area,word){
-
+let word = area.dataset.word;
 if(!area.coords) return;
 
 if(!answerClips[word]){
@@ -554,7 +555,7 @@ let words = JSON.parse(saved);
 words.forEach(word => {
 
 let area = document.querySelector(
-`area[onclick*="${word}"]`
+  `area[data-word="${word}"]`
 );
 
 if(area){
