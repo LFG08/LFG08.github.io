@@ -61,39 +61,131 @@ background:transparent;
 
 }
 
-/* MENU */
+/* ================= MENU ================= */
 
 #wordMenu{
-position:fixed;
-top:120px;
-right:30px;
-left:30px;
-width:180px;
+  position:fixed;
+  top:120px;
+  left:30px;   /* ← anchor it here */
+  width: 250px;;
 
-max-height:70vh;
+  max-height:70vh;
 
-background:rgba(0,0,0,0.418);
-border:1px solid white;
-color:white;
+  background:rgba(0,0,0,0.418);
+  border:1px solid white;
+  color:white;
 
-font-family:'Times New Roman', Times, serif;
-font-size:0.9rem;
+  font-family:'Times New Roman', Times, serif;
+  font-size:0.9rem;
 
-user-select:none;
-z-index:20;
-
-display:flex;
-flex-direction:column;
-
+  display:flex;
+  flex-direction:column;
+  z-index:20;
 }
 
 #menuHeader{
-padding:8px;
-cursor:move;
-display:flex;
-justify-content:space-between;
-align-items:center;
-border-bottom:1px solid white;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+}
+/* LEFT SIDE */
+.title {
+  flex-shrink:inherit;
+  margin-right: 4px;
+  margin-left: 8px;
+  margin-top: 8px;
+}
+
+/* RIGHT SIDE GROUP */
+.right{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-shrink:0; /* prevents collapsing weirdness */
+  margin-right: 8px;
+}
+
+/* COUNTER */
+#counter {
+  white-space: nowrap;
+}
+
+/* ================= INFO ================= */
+
+.info-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.info-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 6px; /* invisible bridge */
+}
+
+.info-btn,
+.menu-btn{
+  
+  display: flex;              /* KEY */
+  align-items: center;        /* vertical center */
+  justify-content: center;    /* horizontal center */
+  
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+  font-size: 11px;
+  cursor: pointer;
+  background: #ccc;
+  line-height: 16px;
+  padding: 0;
+  margin-right: 4px;
+}
+
+.tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 180px;
+  margin-top: 4px; /* small, safe gap */
+
+  background: rgba(0,0,0,0.85);
+  color: white;
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 6px;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+
+/* show tooltip when hovering button OR tooltip itself */
+.info-wrapper:hover .tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  
+}
+
+.tooltip a {
+  text-decoration: none;
+}
+
+.tooltip a:hover {
+  text-decoration: none; /* optional: add back on hover */
+}
+
+.highlight {
+  color: #03d626;
+  text-decoration: none
+}
+
+.highlight:hover{
+  text-decoration: none;
 }
 
 #wordList{
@@ -119,17 +211,22 @@ opacity:0.6;
 display:none;
 }
 
-#clearButton{
+#overlaySelector,
+#clearButton,
+#toggleClickMode,
+#rotateMandala{
+
 border:none;
 border-top:1px solid white;
+
 background:rgba(0,0,0,0.418);
 color:white;
 
 padding:8px;
 font-family:'Times New Roman', Times, serif;
 cursor:pointer;
-}
 
+}
 
 </style>
 
@@ -141,10 +238,23 @@ cursor:pointer;
 <div id="wordMenu">
 
 <div id="menuHeader">
-Caça-Palavras Isa
-<button id="toggleMenu">–</button>
-</div>
+<span class= "title">Isa 2026</span>
 
+<div class="right">
+<span id="counter"></span>
+
+<span class="info-wrapper">
+    <button class="info-btn">i</button>
+
+    <span class="tooltip">
+      Feliz Aniversário Isaaa 🎉🎉
+    </span>
+  </span>
+  
+  <a class="menu-btn" href="/" >☰</a>
+  <button id="toggleMenu">–</button>
+</div>
+</div>
 <ul id="wordList">
 
 <li id="menu-2242">2242</li>
@@ -190,9 +300,9 @@ Caça-Palavras Isa
 <li id="menu-Tupac">Tupac</li>
 <li id="menu-Vasco">Vasco</li>
 
-</ul>
-
-<button id="clearButton" class="clearButton" onclick="clearAll()">Reset</button>
+<div id="wordTooltip"></div>
+  
+<button id="clearButton" onclick="confirmReset()">Reset</button>
 
 </div>
 
@@ -1483,6 +1593,52 @@ document.addEventListener("mouseup", function(){
 isDragging = false;
 document.body.classList.remove("dragging");
 });
+
+
+//SAVE//
+
+function saveProgress(){
+
+localStorage.setItem(
+"ISAPuzzleProgress",
+JSON.stringify(Object.keys(answerClips)
+.filter(w => answerClips[w].classList.contains("visible")))
+);
+
+}
+
+//LOAD-SCROLL//
+
+function loadProgress(){
+
+let saved = localStorage.getItem("ISAPuzzleProgress");
+
+if(!saved) return;
+
+let words = JSON.parse(saved);
+
+words.forEach(word => {
+
+let area = document.querySelector(
+`area[onclick*="${word}"]`
+);
+
+if(area){
+toggleAnswer(area, word);
+}
+
+});
+
+});
+  
+window.addEventListener("load", loadProgress);
+
+</script>
+
+
+<script src="https://unpkg.com/image-map-resizer/js/imageMapResizer.min.js"></script>
+<script>imageMapResize();</script>
+
 
 
 </script>
