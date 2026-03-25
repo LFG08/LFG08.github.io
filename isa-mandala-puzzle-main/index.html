@@ -1481,16 +1481,30 @@ cursor:pointer;
 
 <script>
 
+
 document.addEventListener("dragstart", e => e.preventDefault());
 
 //FOUND WORD//
 
-const menuItems = {};
 
-document.querySelectorAll("#wordList li").forEach(li=>{
-menuItems[li.id] = li;
-});
+/*counter*/
+function updateCounter(){
 
+let found = document.querySelectorAll("#wordList li.found").length;
+let total = document.querySelectorAll("#wordList li").length;
+
+document.getElementById("counter").textContent =
+found + " / " + total;
+
+  /* PUZZLE COMPLETE MESSAGE */
+
+if(found === total && total > 0){
+
+setTimeout(function(){
+alert("fim! 🎉🎉");
+},200);
+}
+}
 
 function toggleWord(word){
 
