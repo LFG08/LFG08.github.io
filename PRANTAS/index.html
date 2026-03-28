@@ -498,7 +498,7 @@ Object.values(answerClips).forEach(clip=>{
 clip.style.backgroundImage = "url('" + currentOverlay + "')";
 });
 
-localStorage.setItem("selectedOverlay", currentOverlay);
+localStorage.setItem("PRANTAS_selectedOverlay", currentOverlay);
 
 };
 
@@ -642,15 +642,20 @@ toggleAnswer(area, word);
 
 window.addEventListener("load", function(){
 
-let savedOverlay = localStorage.getItem("selectedOverlay");
+const overlayStorageKey = "PRANTAS_selectedOverlay";
+let savedOverlay = localStorage.getItem(overlayStorageKey);
+let validOverlays = Array.from(overlaySelector.options).map(option => option.value);
 
-if(savedOverlay){
+if(savedOverlay && validOverlays.includes(savedOverlay)){
 
 currentOverlay = savedOverlay;
 
 /* update selector UI */
 overlaySelector.value = savedOverlay;
 
+}else{
+currentOverlay = "mandala_gabarito_1.png";
+overlaySelector.value = "mandala_gabarito_1.png";
 }
 
 });
