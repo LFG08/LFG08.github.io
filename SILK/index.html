@@ -566,7 +566,7 @@ cursor:pointer;
    
     <area id="area-Pavao" 
     coords="2921,2041,2939,2006,2965,2014,2983,2050,2969,2085,2934,2080" 
-    hape="poly" onclick="toggleAnswer(this,'Pavao'); return false;">
+    shape="poly" onclick="toggleAnswer(this,'Pavao'); return false;">
    
     <area id="area-Gato" 
     coords="715,3928,746,3947,746,3963,732,3980,697,3972,680,3945,689,3936" 
@@ -747,17 +747,18 @@ saveProgress();
 }
   
 /*counter*/
+const totalWords = document.querySelectorAll("#wordList li").length;
+
 function updateCounter(){
 
 let found = document.querySelectorAll("#wordList li.found").length;
-let total = document.querySelectorAll("#wordList li").length;
 
 document.getElementById("counter").textContent =
-found + " / " + total;
+found + " / " + totalWords;
 
   /* PUZZLE COMPLETE MESSAGE */
 
-if(found === total && total > 0){
+if(found === totalWords && totalWords > 0){
 
 setTimeout(function(){
 alert("fim! 🎉🎉");
