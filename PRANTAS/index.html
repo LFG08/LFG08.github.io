@@ -435,6 +435,7 @@ this.textContent=allowToggleOff
 
 /* ==== gabaritos ====*/
 let currentOverlay = "mandala_gabarito_1.png";
+const overlayStorageKey = "PRANTAS_selectedOverlay";
 
 /* ===== menu items ===== */
 
@@ -488,6 +489,10 @@ menuItems["menu-"+word].classList.toggle("found");
 updateCounter();
 saveProgress();
 
+/* SAVE PROGRESS */
+saveProgress();
+
+}
 
 /* overlay */
 overlaySelector.onchange = function(){
@@ -498,14 +503,9 @@ Object.values(answerClips).forEach(clip=>{
 clip.style.backgroundImage = "url('" + currentOverlay + "')";
 });
 
-localStorage.setItem("selectedOverlay", currentOverlay);
+localStorage.setItem(overlayStorageKey, currentOverlay);
 
 };
-
-/* SAVE PROGRESS */
-saveProgress();
-
-}
 
 /* ===== reset ===== */
 
@@ -642,15 +642,19 @@ toggleAnswer(area, word);
 
 window.addEventListener("load", function(){
 
-let savedOverlay = localStorage.getItem("selectedOverlay");
+let savedOverlay = localStorage.getItem(overlayStorageKey);
+let validOverlays = Array.from(overlaySelector.options).map(option => option.value);
 
-if(savedOverlay){
+if(savedOverlay && validOverlays.includes(savedOverlay)){
 
 currentOverlay = savedOverlay;
 
 /* update selector UI */
 overlaySelector.value = savedOverlay;
 
+}else{
+currentOverlay = "mandala_gabarito_1.png";
+overlaySelector.value = "mandala_gabarito_1.png";
 }
 
 });
