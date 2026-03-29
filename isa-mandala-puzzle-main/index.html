@@ -1458,7 +1458,14 @@ if(!area.coords) return;
 
 if(!answerClips[word]){
 
-let coords=area.coords.split(",");
+const answersOverlay = document.getElementById("answersOverlay");
+const matchingAreas = Array.from(
+document.querySelectorAll('map[name="image-map"] area')
+).filter(a => (a.getAttribute("onclick") || "").includes("'" + word + "'"));
+const areasToPaint = matchingAreas.length ? matchingAreas : [area];
+
+answerClips[word] = areasToPaint.map(a => {
+let coords=a.coords.split(",");
 let points=[];
 
 for(let i=0;i<coords.length;i+=2){
@@ -1470,32 +1477,30 @@ clip.className = "answerClip";
 clip.style.clipPath = "polygon(" + points.join(",") + ")";
 clip.style.backgroundImage = "url('" + currentOverlay + "')";
 
-const answersOverlay = document.getElementById("answersOverlay");
-
 answersOverlay.appendChild(clip);
-
-answerClips[word]=clip;
+return clip;
+});
 }
 
 let menuWord = menuItems["menu-"+word];
-let isVisible = answerClips[word].classList.contains("visible");
+let isVisible = answerClips[word].some(clip => clip.classList.contains("visible"));
 
 if(!isVisible){
 
-  answerClips[word].classList.add("visible");
-  menuItems["menu-"+word].classList.add("found");
+  answerClips[word].forEach(clip => clip.classList.add("visible"));
+  if(menuWord) menuWord.classList.add("found");
 
-  if(menuWord.classList.contains("hidden-word")){
+  if(menuWord && menuWord.classList.contains("hidden-word")){
   menuWord.textContent = menuWord.dataset.hidden;
  }
 }
 
 else if(allowToggleOff){
 
-  answerClips[word].classList.remove("visible");
-  menuItems["menu-"+word].classList.remove("found");
+  answerClips[word].forEach(clip => clip.classList.remove("visible"));
+  if(menuWord) menuWord.classList.remove("found");
 
-  if(menuWord.classList.contains("hidden-word")){
+  if(menuWord && menuWord.classList.contains("hidden-word")){
     menuWord.textContent = "?".repeat(menuWord.dataset.hidden.length);
   };
 }
@@ -1540,7 +1545,7 @@ if(area){
 
 // ONLY toggle if it's not already visible
 if(!answerClips[word] || 
-   !answerClips[word].classList.contains("visible")){
+   !answerClips[word].some(clip => clip.classList.contains("visible"))){
 
 toggleAnswer(area, word);
 }
@@ -1554,7 +1559,7 @@ function clearAll(){
 
 /* remove highlights */
 for(let word in answerClips){
-answerClips[word].classList.remove("visible");
+answerClips[word].forEach(clip => clip.classList.remove("visible"));
 
 }
 
@@ -1666,7 +1671,7 @@ function saveProgress(){
 localStorage.setItem(
 "isaPuzzleProgress",
 JSON.stringify(Object.keys(answerClips)
-.filter(w => answerClips[w].classList.contains("visible")))
+.filter(w => answerClips[w].some(clip => clip.classList.contains("visible"))))
 );
 
 }
