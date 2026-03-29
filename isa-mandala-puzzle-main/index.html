@@ -1,260 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <title>Palavras</title>
 <style>
-
-/* MANDALA */
-
-.container{
-position:relative;
-width:2048px;
-height:2048px;
-contain:layout paint;
-}
-
-.container img{
-position:absolute;
-top:0;
-left:0;
-}
-
-.word{
-opacity:0;
-pointer-events:none;
-
-transition:opacity 0.12s linear;
-
-will-change:opacity;
-transform:translateZ(0);
-}
-
-.word.visible{
-opacity:1;
-}
-
-/* BACKGROUND + CURSOR */
-
-body{
-background:black;
-margin:0;
-display:flex;
-justify-content:center;
-align-items:center;
-user-select:none;
--webkit-user-select:none;
--moz-user-select:none;
-cursor:grab;
-overflow: auto;
-display: block;
-}
-
-body.dragging{
-cursor:grabbing;
-}
-
-.hitbox{
-position:absolute;
-cursor:inherit;
-background:transparent;
-
-}
-
-/* ================= MENU ================= */
-
-#wordMenu{
-  position:fixed;
-  top:120px;
-  left:30px;   /* ← anchor it here */
-  width: 250px;;
-
-  max-height:70vh;
-
-  background:rgba(0,0,0,0.418);
-  border:1px solid white;
-  color:white;
-
-  font-family:'Times New Roman', Times, serif;
-  font-size:0.9rem;
-
-  display:flex;
-  flex-direction:column;
-  z-index:20;
-}
-
-#menuHeader{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:6px;
-}
-/* LEFT SIDE */
-.title {
-  flex-shrink:inherit;
-  margin-right: 4px;
-  margin-left: 8px;
-  margin-top: 8px;
-}
-
-/* RIGHT SIDE GROUP */
-.right{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  flex-shrink:0; /* prevents collapsing weirdness */
-  margin-right: 8px;
-}
-
-/* COUNTER */
-#counter {
-  white-space: nowrap;
-}
-
-/* ================= INFO ================= */
-
-.info-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.info-wrapper::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  height: 6px; /* invisible bridge */
-}
-
-.info-btn,
-.menu-btn{
-  
-  display: flex;              /* KEY */
-  align-items: center;        /* vertical center */
-  justify-content: center;    /* horizontal center */
-  
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: none;
-  font-size: 11px;
-  cursor: pointer;
-  background: #ccc;
-  line-height: 16px;
-  padding: 0;
-  margin-right: 4px;
-}
-
-.tooltip {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 180px;
-  margin-top: 4px; /* small, safe gap */
-
-  background: rgba(0,0,0,0.85);
-  color: white;
-  font-size: 12px;
-  padding: 8px;
-  border-radius: 6px;
-
-  opacity: 0;
-  pointer-events: none;
-  transition: 0.2s;
-}
-
-/* show tooltip when hovering button OR tooltip itself */
-.info-wrapper:hover .tooltip {
-  opacity: 1;
-  pointer-events: auto;
-  
-}
-
-.tooltip a {
-  text-decoration: none;
-}
-
-.tooltip a:hover {
-  text-decoration: none; /* optional: add back on hover */
-}
-
-.highlight {
-  color: #03d626;
-  text-decoration: none
-}
-
-.highlight:hover{
-  text-decoration: none;
-}
-
-#wordList{
-flex:1;
-overflow-y:auto;
-
-list-style:none;
-margin:0;
-padding:8px;
-line-height:1.4;
-}
-
-#wordList li{
-padding:4px 0;
-}
-
-.found{
-text-decoration:line-through;
-opacity:0.6;
-}
-
-.collapsed #wordList{
-display:none;
-}
-
-#overlaySelector,
-#clearButton,
-#toggleClickMode,
-#rotateMandala{
-
-border:none;
-border-top:1px solid white;
-
-background:rgba(0,0,0,0.418);
-color:white;
-
-padding:8px;
-font-family:'Times New Roman', Times, serif;
-cursor:pointer;
-
-}
-
+.container{position:relative;width:2048px;height:2048px;contain:layout paint;transition:transform 0.25s ease;}
+.container img{position:absolute;top:0;left:0;}
+#answersOverlay{position:absolute;top:0;left:0;width:2048px;height:2048px;pointer-events:none;}
+.answerClip{position:absolute;top:0;left:0;width:2048px;height:2048px;background-image:url("Isa2026_error.PNG");background-size:2048px 2048px;opacity:0;transition:opacity 0.12s linear;}
+.answerClip.visible{opacity:1;}
+body{background:black;margin:0;overflow:auto;cursor:grab;user-select:none;}
+body.dragging{cursor:grabbing;}
+#wordMenu{position:fixed;top:120px;left:30px;width:250px;max-height:70vh;background:rgba(0,0,0,0.418);border:1px solid white;color:white;font-family:'Times New Roman', Times, serif;font-size:0.9rem;display:flex;flex-direction:column;z-index:20;}
+#menuHeader{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.title{flex-shrink:inherit;margin-right:4px;margin-left:8px;margin-top:8px;}
+.right{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-right:8px;}
+#counter{white-space:nowrap;}
+.info-wrapper{position:relative;display:inline-block;}
+.info-wrapper::after{content:"";position:absolute;top:100%;left:0;width:100%;height:6px;}
+.info-btn,.menu-btn{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;border:none;font-size:11px;cursor:pointer;background:#ccc;line-height:16px;padding:0;margin-right:4px;}
+.tooltip{position:absolute;top:100%;left:0;width:180px;margin-top:4px;background:rgba(0,0,0,0.85);color:white;font-size:12px;padding:8px;border-radius:6px;opacity:0;pointer-events:none;transition:0.2s;}
+.info-wrapper:hover .tooltip{opacity:1;pointer-events:auto;}
+#wordList{flex:1;overflow-y:auto;list-style:none;margin:0;padding:8px;line-height:1.4;}
+#wordList li{padding:4px 0;}
+.found{text-decoration:line-through;opacity:0.6;}
+.collapsed #wordList{display:none;}
+#clearButton,#toggleClickMode,#rotateMandala{border:none;border-top:1px solid white;background:rgba(0,0,0,0.418);color:white;padding:8px;font-family:'Times New Roman', Times, serif;cursor:pointer;}
 </style>
-
 </head>
-
 <body>
-
-<!--MENU-->
 <div id="wordMenu">
-
-<div id="menuHeader">
-<span class= "title">Isa 2026</span>
-
-<div class="right">
-<span id="counter"></span>
-
-<span class="info-wrapper">
-    <button class="info-btn">i</button>
-
-    <span class="tooltip">
-      Feliz Aniversário Isaaa 🎉🎉
-    </span>
-  </span>
-  
-  <a class="menu-btn" href="/" >☰</a>
-  <button id="toggleMenu">–</button>
-</div>
-</div>
+<div id="menuHeader"><span class="title">Isa 2026</span><div class="right"><span id="counter"></span><span class="info-wrapper"><button class="info-btn">i</button><span class="tooltip">Feliz Aniversário Isaaa 🎉🎉</span></span><a class="menu-btn" href="/">☰</a><button id="toggleMenu">–</button></div></div>
 <ul id="wordList">
 
 <li id="menu-2242">2242</li>
@@ -300,64 +75,13 @@ cursor:pointer;
 <li id="menu-Tupac">Tupac</li>
 <li id="menu-Vasco">Vasco</li>
 
-<div id="wordTooltip"></div>
-  
+</ul>
+
 <button id="clearButton" onclick="confirmReset()">Reset</button>
-
+<button id="toggleClickMode">Desmarcar: ON</button>
+<button id="rotateMandala">Rotate (0°)</button>
 </div>
-
-<!--GABARITOS-->
-<div class="container">
-
-<img src="Isa2026.png" usemap="#image-map">
-
-<img id="2242" class="word" src="Gabarito/2242.png">
-<img id="AchillesComeDown" class="word" src="Gabarito/AchillesComeDown.png">
-<img id="ACOTAR" class="word" src="Gabarito/ACOTAR.png">
-<img id="AguaComGas" class="word" src="Gabarito/AguaComGas.png">
-<img id="AsMargensDoTempo" class="word" src="Gabarito/AsMargensDoTempo.png">
-<img id="Babel" class="word" src="Gabarito/Babel.png">
-<img id="Cafe" class="word" src="Gabarito/Cafe.png">
-<img id="ChandlerBing" class="word" src="Gabarito/ChandlerBing.png">
-<img id="DeProfundis" class="word" src="Gabarito/DeProfundis.png">
-<img id="DorianGray" class="word" src="Gabarito/DorianGray.png">
-<img id="Eminem" class="word" src="Gabarito/Eminem.png">
-<img id="Friends" class="word" src="Gabarito/Friends.png">
-<img id="HarryPotter" class="word" src="Gabarito/HarryPotter.png">
-<img id="Hermione" class="word" src="Gabarito/Hermione.png">
-<img id="Hitemup" class="word" src="Gabarito/Hitemup.png">
-<img id="HOT" class="word" src="Gabarito/HOT.png">
-<img id="Isabelle" class="word" src="Gabarito/Isabelle.png">
-<img id="Joey" class="word" src="Gabarito/Joey.png">
-<img id="Karine" class="word" src="Gabarito/Karine.png">
-<img id="Kaz" class="word" src="Gabarito/Kaz.png">
-<img id="Kitay" class="word" src="Gabarito/Kitay.png">
-<img id="Kuang" class="word" src="Gabarito/Kuang.png">
-<img id="Mockinbird" class="word" src="Gabarito/Mockinbird.png">
-<img id="MonicaGeller" class="word" src="Gabarito/MonicaGeller.png">
-<img id="MonsterRomance" class="word" src="Gabarito/MonsterRomance.png">
-<img id="NotAfraid" class="word" src="Gabarito/NotAfraid.png">
-<img id="OscarWilde" class="word" src="Gabarito/OscarWilde.png">
-<img id="Phoebe" class="word" src="Gabarito/Phoebe.png">
-<img id="Pinscher" class="word" src="Gabarito/Pinscher.png">
-<img id="Rachel" class="word" src="Gabarito/Rachel.png">
-<img id="Rhysand" class="word" src="Gabarito/Rhysand.png">
-<img id="Robin" class="word" src="Gabarito/Robin.png">
-<img id="Rony" class="word" src="Gabarito/Rony.png">
-<img id="ROSS" class="word" src="Gabarito/ROSS.png">
-<img id="SixOfCrows" class="word" src="Gabarito/SixOfCrows.png">
-<img id="Stan" class="word" src="Gabarito/Stan.png">
-<img id="Superman" class="word" src="Gabarito/Superman.png">
-<img id="Supermod" class="word" src="Gabarito/Supermod.png">
-<img id="Temporary" class="word" src="Gabarito/Temporary.png">
-<img id="TheRealSlimShady" class="word" src="Gabarito/TheRealSlimShady.png">
-<img id="Tupac" class="word" src="Gabarito/Tupac.png">
-<img id="Vasco" class="word" src="Gabarito/Vasco.png">
-
-</div>
-
-<!--GABARITOS_MAPEAMENTO-->
-
+<div class="container"><img src="Isa2026.png" usemap="#image-map"><div id="answersOverlay"></div></div>
 <map name="image-map">
 
 <!--https://www.image-map.net/-->
@@ -1477,192 +1201,33 @@ cursor:pointer;
 <!-- -->
 
 </map>
-
-
 <script>
-
-
 document.addEventListener("dragstart", e => e.preventDefault());
-
-//FOUND WORD//
-
-
-/*counter*/
-function updateCounter(){
-
-let found = document.querySelectorAll("#wordList li.found").length;
-let total = document.querySelectorAll("#wordList li").length;
-
-document.getElementById("counter").textContent =
-found + " / " + total;
-
-  /* PUZZLE COMPLETE MESSAGE */
-
-if(found === total && total > 0){
-
-setTimeout(function(){
-alert("fim! 🎉🎉");
-},200);
-}
-}
-
-function toggleWord(word){
-
-let highlight = document.getElementById(word);
-let menuWord = menuItems["menu-"+word];
-
-highlight.classList.toggle("visible");
-menuWord.classList.toggle("found");
-
-}
-
-
-
-//MENU//
-
-let menu = document.getElementById("wordMenu");
-let header = document.getElementById("menuHeader");
-
-let offsetX, offsetY;
-let dragging = false;
-
-header.addEventListener("mousedown", function(e){
-dragging = true;
-
-offsetX = e.clientX - menu.offsetLeft;
-offsetY = e.clientY - menu.offsetTop;
-});
-
-document.addEventListener("mousemove", function(e){
-if(!dragging) return;
-
-menu.style.left = (e.clientX - offsetX) + "px";
-menu.style.top = (e.clientY - offsetY) + "px";
-});
-
-document.addEventListener("mouseup", function(){
-dragging = false;
-});
-
-document.getElementById("toggleMenu").onclick = function(){
-
-let menu = document.getElementById("wordMenu");
-
-menu.classList.toggle("collapsed");
-
-};
-
-//RESET//
-
-function clearAll(){
-
-let words = document.querySelectorAll(".word");
-
-words.forEach(function(word){
-word.style.display = "none";
-});
-
-let menuWords = document.querySelectorAll("#wordList li");
-
-menuWords.forEach(function(item){
-item.classList.remove("found");
-});
-
-}
-
-//DRAG-SCROLL//
-
-let isDragging = false;
-let startX, startY;
-let scrollLeft, scrollTop;
-
-document.addEventListener("mousedown", function(e){
-
-// avoid dragging when clicking UI elements
-if(e.target.closest("#wordMenu")) return;
-
-isDragging = true;
-document.body.classList.add("dragging");
-
-startX = e.clientX;
-startY = e.clientY;
-
-scrollLeft = window.scrollX;
-scrollTop = window.scrollY;
-
-});
-
-document.addEventListener("mousemove", function(e){
-
-if(!isDragging) return;
-
-let dx = e.clientX - startX;
-let dy = e.clientY - startY;
-
-window.scrollTo(scrollLeft - dx, scrollTop - dy);
-
-});
-
-document.addEventListener("mouseup", function(){
-isDragging = false;
-document.body.classList.remove("dragging");
-});
-
-
-//SAVE//
-
-function saveProgress(){
-
-localStorage.setItem(
-"ISAPuzzleProgress",
-JSON.stringify(Object.keys(answerClips)
-.filter(w => answerClips[w].classList.contains("visible")))
-);
-
-}
-
-//LOAD-SCROLL//
-
-function loadProgress(){
-
-let saved = localStorage.getItem("ISAPuzzleProgress");
-
-if(!saved) return;
-
-let words = JSON.parse(saved);
-
-words.forEach(word => {
-
-let area = document.querySelector(
-`area[onclick*="${word}"]`
-);
-
-if(area){
-toggleAnswer(area, word);
-}
-
-});
-
-});
-  
-window.addEventListener("load", loadProgress);
-
+window.addEventListener("load", function(){ updateCounter(); loadProgress(); });
+let allowToggleOff=true;
+toggleClickMode.onclick=function(){allowToggleOff=!allowToggleOff;this.textContent=allowToggleOff?"Desmarcar: ON":"Desmarcar: OFF";};
+const menuItems={};document.querySelectorAll("#wordList li").forEach(li=>{menuItems[li.id]=li;});
+const answerClips={};const wordAreas={};
+document.querySelectorAll('map[name="image-map"] area').forEach(area=>{const onclick=area.getAttribute('onclick')||"";const m=onclick.match(/toggleWord\('([^']+)'\)/);if(!m)return;const word=m[1];if(!wordAreas[word])wordAreas[word]=[];wordAreas[word].push(area);});
+function buildClips(word){if(answerClips[word])return;answerClips[word]=[];const areas=wordAreas[word]||[];const answersOverlay=document.getElementById("answersOverlay");areas.forEach(area=>{if(!area.coords)return;let coords=area.coords.split(",");let points=[];for(let i=0;i<coords.length;i+=2){points.push(coords[i]+"px "+coords[i+1]+"px");}let clip=document.createElement("div");clip.className="answerClip";clip.style.clipPath="polygon("+points.join(",")+")";answersOverlay.appendChild(clip);answerClips[word].push(clip);});}
+function toggleWord(word){buildClips(word);let clips=answerClips[word]||[];let menuWord=menuItems["menu-"+word];if(!menuWord||clips.length===0)return;let isVisible=clips[0].classList.contains("visible");if(!isVisible){clips.forEach(clip=>clip.classList.add("visible"));menuWord.classList.add("found");}else if(allowToggleOff){clips.forEach(clip=>clip.classList.remove("visible"));menuWord.classList.remove("found");}updateCounter();saveProgress();}
+function updateCounter(){let found=document.querySelectorAll("#wordList li.found").length;let total=document.querySelectorAll("#wordList li").length;document.getElementById("counter").textContent=found+" / "+total;if(found===total&&total>0){setTimeout(function(){alert("fim! 🎉🎉");},200);}}
+function saveProgress(){localStorage.setItem("ISAPuzzleProgress",JSON.stringify(Object.keys(answerClips).filter(word=>(answerClips[word]||[]).some(clip=>clip.classList.contains("visible")))));}
+function loadProgress(){let saved=localStorage.getItem("ISAPuzzleProgress");if(!saved)return;JSON.parse(saved).forEach(word=>toggleWord(word));}
+function clearAll(){for(let word in answerClips){answerClips[word].forEach(clip=>clip.classList.remove("visible"));}document.querySelectorAll("#wordList li").forEach(li=>li.classList.remove("found"));localStorage.removeItem("ISAPuzzleProgress");updateCounter();}
+function confirmReset(){if(confirm("Reset?")){clearAll();localStorage.removeItem("ISAPuzzleProgress");}}
+let menu=wordMenu;let header=menuHeader;let offsetX,offsetY,dragging=false;
+header.onmousedown=e=>{dragging=true;offsetX=e.clientX-menu.offsetLeft;offsetY=e.clientY-menu.offsetTop;};
+document.onmousemove=e=>{if(!dragging)return;menu.style.left=(e.clientX-offsetX)+"px";menu.style.top=(e.clientY-offsetY)+"px";};
+document.onmouseup=()=>dragging=false;
+toggleMenu.onclick=()=>wordMenu.classList.toggle("collapsed");
+let rotation=0;rotateMandala.onclick=function(){rotation=(rotation+90)%360;document.querySelector(".container").style.transform="rotate("+rotation+"deg)";this.textContent="Rotate ("+rotation+"°)";};
+let isDragging=false,startX,startY,scrollLeft,scrollTop;
+document.addEventListener("mousedown",e=>{if(e.target.closest("#wordMenu"))return;isDragging=true;document.body.classList.add("dragging");startX=e.clientX;startY=e.clientY;scrollLeft=window.scrollX;scrollTop=window.scrollY;});
+document.addEventListener("mousemove",e=>{if(!isDragging)return;window.scrollTo(scrollLeft-(e.clientX-startX),scrollTop-(e.clientY-startY));});
+document.addEventListener("mouseup",()=>{isDragging=false;document.body.classList.remove("dragging");});
 </script>
-
-
 <script src="https://unpkg.com/image-map-resizer/js/imageMapResizer.min.js"></script>
 <script>imageMapResize();</script>
-
-
-
-</script>
-
-
-<script src="https://unpkg.com/image-map-resizer/js/imageMapResizer.min.js"></script>
-<script>
-imageMapResize();
-</script>
-
-
 </body>
 </html>
