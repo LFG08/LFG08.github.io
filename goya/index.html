@@ -12,7 +12,7 @@
 <style>
 
 :root{
---mandala-display-size:min(2048px, 100vw);
+--mandala-display-size:2048px;
 --mandala-zoom:1;
 --mandala-render-size:calc(var(--mandala-display-size) * var(--mandala-zoom));
 --mobile-menu-scale:0.25;
@@ -345,6 +345,10 @@ width:100%;
 }
 
 @media (max-width: 900px) and (hover: none) and (pointer: coarse){
+  :root{
+    --mandala-display-size:min(2048px, 100vw);
+  }
+
   #wordMenu{
     top:auto;
     bottom:8px;
