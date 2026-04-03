@@ -129,6 +129,14 @@ cursor:grabbing;
   display:flex;
   flex-direction:column;
   z-index:20;
+  box-sizing:border-box;
+}
+
+#wordMenu.mobile-pinned{
+  left:auto;
+  right:auto;
+  top:auto;
+  bottom:auto;
 }
 
 #wordMenu.mobile-pinned{
@@ -238,6 +246,7 @@ cursor:grabbing;
 
 #wordList{
 flex:1;
+min-height:0;
 overflow-y:auto;
 
 list-style:none;
@@ -338,7 +347,7 @@ font-size:calc(0.8rem * var(--mobile-menu-ui-scale));
 width:100%;
 }
 
-@media (max-width: 900px){
+@media (max-width: 900px) and (hover: none) and (pointer: coarse){
   #wordMenu{
     top:auto;
     bottom:8px;
@@ -346,7 +355,7 @@ width:100%;
     right:auto;
     width:calc(var(--mandala-display-size) * var(--mobile-menu-scale));
     max-height:40vh;
-    font-size:calc(0.85rem * var(--mobile-menu-ui-scale));
+    font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
   }
 
   #wordMenu.pinned-bottom-collapsed{
@@ -385,7 +394,7 @@ width:100%;
   #toggleClickMode,
   #rotateMandala{
     padding:calc(8px * var(--mobile-menu-ui-scale)) calc(6px * var(--mobile-menu-ui-scale));
-    font-size:calc(0.85rem * var(--mobile-menu-ui-scale));
+    font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
   }
 }
 
@@ -1233,7 +1242,7 @@ clearAll();
 }
 
 function isMobileViewport(){
-return window.matchMedia("(max-width: 900px)").matches;
+return window.matchMedia("(max-width: 900px) and (hover: none) and (pointer: coarse)").matches;
 }
 
 function clamp(value, min, max){
@@ -1297,16 +1306,43 @@ if(pinMode === "bottom-collapsed"){
 }
 
 localStorage.setItem(mobileMenuPinKey, pinMode);
+requestAnimationFrame(autoFitMobileMenuContent);
+}
+
+function getBaseMobileUiScale(scale){
+return clamp(scale / 0.25, 0.45, 1.9);
+}
+
+function autoFitMobileMenuContent(){
+if(!isMobileViewport()) return;
+
+let currentScale = Number(getComputedStyle(document.documentElement).getPropertyValue("--mobile-menu-scale")) || 0.25;
+let uiScale = getBaseMobileUiScale(currentScale);
+let minUiScale = 0.40;
+let menu = wordMenu;
+
+document.documentElement.style.setProperty("--mobile-menu-ui-scale", uiScale.toFixed(2));
+
+for(let i = 0; i < 24; i++){
+  if(menu.scrollHeight <= menu.clientHeight + 1) break;
+  if(uiScale <= minUiScale) break;
+  uiScale = Math.max(minUiScale, uiScale - 0.04);
+  document.documentElement.style.setProperty("--mobile-menu-ui-scale", uiScale.toFixed(2));
+}
 }
 
 function setMobileMenuScaleVars(scale){
 let boundedScale = clamp(scale, 0.20, 0.60);
 let uiScale = isMobileViewport()
-? clamp(boundedScale / 0.25, 0.75, 1.9)
+? getBaseMobileUiScale(boundedScale)
 : 1;
 
 document.documentElement.style.setProperty("--mobile-menu-scale", boundedScale.toFixed(2));
 document.documentElement.style.setProperty("--mobile-menu-ui-scale", uiScale.toFixed(2));
+
+if(isMobileViewport()){
+  requestAnimationFrame(autoFitMobileMenuContent);
+}
 }
 
 function initMobileMenuOptions(){
@@ -1390,6 +1426,7 @@ toggleMenu.onclick=()=>{
   if(wordMenu.classList.contains("pinned-bottom-collapsed")) return;
   wordMenu.classList.toggle("collapsed");
   applyMenuBounds();
+  requestAnimationFrame(autoFitMobileMenuContent);
 };
 
 /* ===== rotate mandala ===== */
