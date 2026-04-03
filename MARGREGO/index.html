@@ -14,9 +14,9 @@
 :root{
 --mandala-display-size:2048px;
 --mandala-render-size:var(--mandala-display-size);
---mobile-menu-scale:0.20;
+--mobile-menu-fixed-mobile-scale:0.82;
 --mobile-menu-ui-scale:1;
---mobile-menu-base-width:150px;
+--mobile-menu-base-width:250px;
 }
 
 /* ================= MANDALA ================= */
@@ -116,7 +116,7 @@ cursor:grabbing;
   position:absolute;
   top:120px;
   left:30px;   /* ← anchor it here */
-  width:calc(250px * var(--mobile-menu-ui-scale));
+  width:calc(var(--mobile-menu-base-width) * var(--mobile-menu-ui-scale));
 
   max-height:70vh;
 
@@ -364,6 +364,7 @@ font-family:inherit;
 @media (max-width: 900px) and (any-pointer: coarse){
   :root{
     --mandala-display-size:min(2048px, 100vw);
+    --mobile-menu-ui-scale:var(--mobile-menu-fixed-mobile-scale);
   }
 
   html,
@@ -383,10 +384,7 @@ font-family:inherit;
     left:8px;
     bottom: auto;
     right:auto;
-    width:max(
-      calc(var(--mobile-menu-base-width) * var(--mobile-menu-ui-scale)),
-      calc(var(--mandala-render-size) * var(--mobile-menu-scale))
-    );
+    width:calc(var(--mobile-menu-base-width) * var(--mobile-menu-ui-scale));
     max-width:calc(100vw - 16px);
     max-height:40vh;
     font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
@@ -518,11 +516,6 @@ font-family:inherit;
 </select>
 
 <div id="mobileMenuOptions">
-  <label for="mobileMenuSize">
-    Tamanho menu (mobile)
-    <input id="mobileMenuSize" type="range" min="0.20" max="0.60" step="0.01" value="0.25">
-  </label>
-
   <label for="mobileMenuPin">
     Fixação menu (mobile)
     <select id="mobileMenuPin">
@@ -671,7 +664,6 @@ const guessStorageKey = "MAR_wordGuesses";
 const hintStorageKey = "MAR_wordHints";
 const progressStorageKey = "marPuzzleProgress";
 const defaultOverlay = "mandala_gabarito_1.png";
-const mobileMenuSizeKey = "MAR_mobileMenuSize";
 const mobileMenuPinKey = "MAR_mobileMenuPin";
 let isBootstrapping = true;
 
@@ -877,13 +869,6 @@ function isMobileViewport(){
 return window.matchMedia("(max-width: 900px) and (any-pointer: coarse)").matches;
 }
 
-function setMobileMenuScaleVars(menuScale){
-let safeScale = clamp(menuScale, 0.20, 0.60);
-document.documentElement.style.setProperty("--mobile-menu-scale", safeScale.toFixed(2));
-let uiScale = isMobileViewport() ? clamp(safeScale / 0.25, 0.85, 1.65) : 1;
-document.documentElement.style.setProperty("--mobile-menu-ui-scale", uiScale.toFixed(2));
-}
-
 function applyMobileMenuPin(pinMode){
 let menu = wordMenu;
 menu.classList.remove("mobile-pinned", "pinned-bottom-collapsed", "pinned-top-left", "pinned-top-right");
@@ -919,21 +904,8 @@ wordMenu.style.top = clamp(currentTop, 0, maxTop) + "px";
 }
 
 function initMobileMenuOptions(){
-let sizeInput = document.getElementById("mobileMenuSize");
 let pinSelect = document.getElementById("mobileMenuPin");
-if(!sizeInput || !pinSelect) return;
-
-let savedScale = Number(localStorage.getItem(mobileMenuSizeKey));
-let scale = Number.isFinite(savedScale) && savedScale >= 0.2 && savedScale <= 0.6 ? savedScale : 0.25;
-sizeInput.value = scale.toFixed(2);
-setMobileMenuScaleVars(scale);
-
-sizeInput.addEventListener("input", () => {
-  let nextScale = Number(sizeInput.value || 0.25);
-  setMobileMenuScaleVars(nextScale);
-  localStorage.setItem(mobileMenuSizeKey, nextScale.toFixed(2));
-  applyMenuBounds();
-});
+if(!pinSelect) return;
 
 let savedPin = localStorage.getItem(mobileMenuPinKey) || "free";
 pinSelect.value = savedPin;
@@ -1427,10 +1399,6 @@ document.body.classList.remove("dragging");
 });
 
 window.addEventListener("resize",()=>{
-let sizeInput = document.getElementById("mobileMenuSize");
-if(sizeInput){
-  setMobileMenuScaleVars(Number(sizeInput.value || 0.25));
-}
 let pinSelect = document.getElementById("mobileMenuPin");
 if(pinSelect){
   applyMobileMenuPin(pinSelect.value);
