@@ -116,7 +116,7 @@ cursor:grabbing;
   position:absolute;
   top:120px;
   left:30px;
-  width:calc(var(--mobile-menu-base-width) * var(--mobile-menu-ui-scale));
+  width:calc(250px * var(--mobile-menu-ui-scale));
 
   max-height:70vh;
 
@@ -145,30 +145,24 @@ cursor:grabbing;
   align-items:center;
   justify-content:space-between;
   gap:6px;
-  padding-right:calc(4px * var(--mobile-menu-ui-scale));
-  box-sizing:border-box;
+  touch-action:none;
 }
 /* LEFT SIDE */
 .title {
-  flex:1 1 auto;
-  min-width:0;
+  flex-shrink:inherit;
   white-space: nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  margin-right: calc(4px * var(--mobile-menu-ui-scale));
-  margin-left: calc(8px * var(--mobile-menu-ui-scale));
-  margin-top: calc(8px * var(--mobile-menu-ui-scale));
+  margin-right:calc(4px * var(--mobile-menu-ui-scale));
+  margin-left:calc(8px * var(--mobile-menu-ui-scale));
+  margin-top:calc(8px * var(--mobile-menu-ui-scale));
 }
-
 /* RIGHT SIDE GROUP */
 .right{
   display:flex;
   align-items:center;
   gap:calc(6px * var(--mobile-menu-ui-scale));
-  flex-shrink:0; /* prevents collapsing weirdness */
-  margin-right: calc(8px * var(--mobile-menu-ui-scale));
+  flex-shrink:0;
+  margin-right:calc(8px * var(--mobile-menu-ui-scale));
 }
-
 /* COUNTER */
 #counter {
   white-space: nowrap;
@@ -194,20 +188,19 @@ cursor:grabbing;
 .menu-btn,
 #toggleMenu{
   
-  display: flex;              /* KEY */
-  align-items: center;        /* vertical center */
-  justify-content: center;    /* horizontal center */
-  
-  width: calc(16px * var(--mobile-menu-ui-scale));
-  height: calc(16px * var(--mobile-menu-ui-scale));
-  border-radius: 50%;
-  border: none;
-  font-size: calc(11px * var(--mobile-menu-ui-scale));
-  cursor: pointer;
-  background: #ccc;
-  line-height: calc(16px * var(--mobile-menu-ui-scale));
-  padding: 0;
-  margin-right: 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:calc(16px * var(--mobile-menu-ui-scale));
+  height:calc(16px * var(--mobile-menu-ui-scale));
+  border-radius:50%;
+  border:none;
+  font-size:calc(11px * var(--mobile-menu-ui-scale));
+  cursor:pointer;
+  background:#ccc;
+  line-height:calc(16px * var(--mobile-menu-ui-scale));
+  padding:0;
+  margin-right:calc(4px * var(--mobile-menu-ui-scale));
 }
 
 .tooltip {
@@ -292,7 +285,6 @@ border-top:1px solid white;
 background:rgba(0,0,0,0.418);
 color:white;
 
-padding:8px;
 padding:calc(8px * var(--mobile-menu-ui-scale));
 font-family:'Times New Roman', Times, serif;
 cursor:pointer;
@@ -340,22 +332,14 @@ font-family:inherit;
   }
 
   #wordMenu{
+    top:auto;
     top:8px;
     left:8px;
-    bottom:auto;
+    bottom: auto;
     right:auto;
-    width:calc(var(--mandala-display-size) * var(--mobile-menu-scale));
+    width:calc(var(--mandala-render-size) * var(--mobile-menu-scale));
     max-height:40vh;
     font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
-  }
-
-  .right{
-    gap:calc(3px * var(--mobile-menu-ui-scale));
-    margin-right:calc(4px * var(--mobile-menu-ui-scale));
-  }
-
-  .title{
-    margin-right:calc(2px * var(--mobile-menu-ui-scale));
   }
 
   #wordMenu.pinned-bottom-collapsed{
@@ -384,9 +368,14 @@ font-family:inherit;
     display:flex;
   }
 
+  #mobileMenuOptions label{
+    font-size: inherit
+  }
+
   .tooltip.help-tooltip{
     width:230px;
   }
+
 
   #overlaySelector,
   #clearButton,
@@ -424,9 +413,7 @@ font-family:inherit;
     <button class="info-btn">?</button>
 
     <span class="tooltip help-tooltip">
-      Como jogar: Encontre as palavras escondidas e clique na região correta para marcar.
-      Para usar dica, clique com o botão direito do mouse em uma palavra no menu.
-      Em PRANTAS, cada palavra tem 1 dica (região aproximada).
+      Como jogar: Encontre as palavras escondidas. Para dica, clique com o botão direito do mouse na palavra desejada no menu.
     </span>
   </span>
   
