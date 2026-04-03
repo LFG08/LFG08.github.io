@@ -5,6 +5,7 @@
 
 <title>Rota de Seda</title>
 <link rel="icon" type="image/png" href="/VN.png" sizes="32x32">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preload" as="image" href="mandala_silk_4096.webp"><!-- UPDATED: preload the main mandala image so large source files start loading earlier -->
 <link rel="preload" as="image" href="mandala_gabarito_1.webp"><!-- UPDATED: preload the default answer overlay because it is used on first load -->
   
@@ -102,6 +103,7 @@ cursor:grabbing;
   align-items:center;
   justify-content:space-between;
   gap:6px;
+  touch-action:none;
 }
 /* LEFT SIDE */
 .title {
@@ -143,7 +145,8 @@ cursor:grabbing;
 }
 
 .info-btn,
-.menu-btn{
+.menu-btn,
+#toggleMenu{
   
   display: flex;              /* KEY */
   align-items: center;        /* vertical center */
@@ -265,6 +268,31 @@ padding:8px;
 font-family:Times New Roman, Times, serif;
 cursor:pointer;
 
+}
+
+
+@media (max-width: 900px){
+  #wordMenu{
+    top:auto;
+    bottom:10px;
+    left:10px;
+    right:10px;
+    width:auto;
+    max-height:45vh;
+    font-size:1rem;
+  }
+
+  .tooltip.help-tooltip{
+    width:260px;
+  }
+
+  #overlaySelector,
+  #clearButton,
+  #toggleClickMode,
+  #rotateMandala{
+    padding:12px 8px;
+    font-size:1rem;
+  }
 }
 
 </style>
@@ -832,21 +860,37 @@ localStorage.removeItem("silkPuzzleProgress");
 let menu=wordMenu;
 let header=menuHeader;
 
-let offsetX,offsetY,dragging=false;
+let offsetX,offsetY,dragging=false,dragPointerId=null;
 
-header.onmousedown=e=>{
+header.addEventListener("pointerdown", e => {
+if(e.target.closest("button, a, input, select")) return;
 dragging=true;
+dragPointerId=e.pointerId;
 offsetX=e.clientX-menu.offsetLeft;
 offsetY=e.clientY-menu.offsetTop;
-};
+if(header.setPointerCapture){
+  header.setPointerCapture(e.pointerId);
+}
+});
 
-document.onmousemove=e=>{
+document.addEventListener("pointermove", e => {
 if(!dragging) return;
+if(dragPointerId !== null && e.pointerId !== dragPointerId) return;
 menu.style.left=(e.clientX-offsetX)+"px";
 menu.style.top=(e.clientY-offsetY)+"px";
-};
+menu.style.bottom="auto";
+menu.style.right="auto";
+});
 
-document.onmouseup=()=>dragging=false;
+function stopMenuDrag(e){
+if(!dragging) return;
+if(e && dragPointerId !== null && e.pointerId !== dragPointerId) return;
+dragging=false;
+dragPointerId=null;
+}
+
+document.addEventListener("pointerup", stopMenuDrag);
+document.addEventListener("pointercancel", stopMenuDrag);
 
 /* ===== collapse menu ===== */
 
