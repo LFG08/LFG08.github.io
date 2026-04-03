@@ -13,6 +13,7 @@
 
 :root{
 --mandala-display-size:min(2048px, 100vw);
+--mobile-menu-scale:0.25;
 }
 
 /* ================= MANDALA ================= */
@@ -127,6 +128,13 @@ cursor:grabbing;
   display:flex;
   flex-direction:column;
   z-index:20;
+}
+
+#wordMenu.mobile-pinned{
+  left:auto;
+  right:auto;
+  top:auto;
+  bottom:auto;
 }
 
 #menuHeader{
@@ -309,15 +317,62 @@ cursor:pointer;
 
 }
 
+#mobileMenuOptions{
+display:none;
+border-top:1px solid white;
+padding:8px;
+gap:6px;
+flex-direction:column;
+}
+
+#mobileMenuOptions label{
+display:flex;
+flex-direction:column;
+gap:4px;
+font-size:0.8rem;
+}
+
+#mobileMenuOptions input,
+#mobileMenuOptions select{
+width:100%;
+}
+
 @media (max-width: 900px){
   #wordMenu{
     top:auto;
     bottom:8px;
     left:8px;
     right:auto;
-    width:min(220px, calc(100vw - 16px));
+    width:calc(var(--mandala-display-size) * var(--mobile-menu-scale));
     max-height:40vh;
     font-size:0.85rem;
+  }
+
+  #wordMenu.pinned-bottom-collapsed{
+    left:8px !important;
+    right:8px !important;
+    top:auto !important;
+    bottom:8px !important;
+    width:auto !important;
+    max-height:none;
+  }
+
+  #wordMenu.pinned-top-left{
+    top:8px !important;
+    left:8px !important;
+    right:auto !important;
+    bottom:auto !important;
+  }
+
+  #wordMenu.pinned-top-right{
+    top:8px !important;
+    right:8px !important;
+    left:auto !important;
+    bottom:auto !important;
+  }
+
+  #mobileMenuOptions{
+    display:flex;
   }
 
   .tooltip.help-tooltip{
@@ -394,6 +449,23 @@ cursor:pointer;
 <li id="menu-Pentagrama" class="hidden-word" data-hidden="Pentagrama" data-def="um simbolo escondido"></li>
 
 </ul>
+
+<div id="mobileMenuOptions">
+  <label for="mobileMenuSize">
+    Tamanho menu (mobile)
+    <input id="mobileMenuSize" type="range" min="0.20" max="0.60" step="0.01" value="0.25">
+  </label>
+
+  <label for="mobileMenuPin">
+    Fixação menu (mobile)
+    <select id="mobileMenuPin">
+      <option value="free">Livre (arrastar)</option>
+      <option value="bottom-collapsed">Recolhido inferior</option>
+      <option value="top-left">Superior esquerdo</option>
+      <option value="top-right">Superior direito</option>
+    </select>
+  </label>
+</div>
 
 <div id="wordTooltip"></div>
 
@@ -512,6 +584,8 @@ const overlayStorageKey = "GOYA_selectedOverlay";
 const guessStorageKey = "GOYA_wordGuesses";
 const hintStorageKey = "GOYA_wordHints";
 const progressStorageKey = "goyaPuzzleProgress";
+const mobileMenuSizeKey = "GOYA_mobileMenuSize";
+const mobileMenuPinKey = "GOYA_mobileMenuPin";
 const defaultOverlay = "mandala_gabarito_1.png";
 
 const hintRegionMapCoords = [
@@ -588,6 +662,7 @@ li.spellcheck = false;
 loadGuesses();
 loadHints();
 updateCounter();
+initMobileMenuOptions();
 
 /* restore overlay OR set default */
 let savedOverlay = localStorage.getItem(overlayStorageKey);
@@ -604,12 +679,20 @@ if(savedOverlay && validOverlays.includes(savedOverlay)){
 /* apply overlay immediately */
 overlaySelector.dispatchEvent(new Event("change"));
 layoutHintRegions();
+applyMenuBounds();
 
 /* load answers AFTER overlay is ready */
 loadProgress();
 });
 
-window.addEventListener("resize", layoutHintRegions);
+window.addEventListener("resize", () => {
+layoutHintRegions();
+let pinSelect = document.getElementById("mobileMenuPin");
+if(pinSelect){
+  applyMobileMenuPin(pinSelect.value);
+}
+applyMenuBounds();
+});
 
 
 /* ===== toggle mode ===== */
@@ -1144,6 +1227,102 @@ clearAll();
 
 }
 
+function isMobileViewport(){
+return window.matchMedia("(max-width: 900px)").matches;
+}
+
+function clamp(value, min, max){
+return Math.min(Math.max(value, min), max);
+}
+
+function getViewportSize(){
+if(window.visualViewport){
+  return {
+    width: window.visualViewport.width,
+    height: window.visualViewport.height
+  };
+}
+
+return {
+  width: window.innerWidth,
+  height: window.innerHeight
+};
+}
+
+function applyMenuBounds(){
+if(wordMenu.classList.contains("mobile-pinned")) return;
+
+let menuRect = wordMenu.getBoundingClientRect();
+let viewport = getViewportSize();
+let currentLeft = wordMenu.offsetLeft;
+let currentTop = wordMenu.offsetTop;
+let maxLeft = Math.max(0, viewport.width - menuRect.width);
+let maxTop = Math.max(0, viewport.height - menuRect.height);
+
+let boundedLeft = clamp(currentLeft, 0, maxLeft);
+let boundedTop = clamp(currentTop, 0, maxTop);
+
+wordMenu.style.left = boundedLeft + "px";
+wordMenu.style.top = boundedTop + "px";
+wordMenu.style.right = "auto";
+wordMenu.style.bottom = "auto";
+}
+
+function applyMobileMenuPin(pinMode){
+wordMenu.classList.remove("pinned-bottom-collapsed", "pinned-top-left", "pinned-top-right", "mobile-pinned");
+
+if(!isMobileViewport() || pinMode === "free"){
+  if(pinMode === "free"){
+    wordMenu.classList.remove("collapsed");
+  }
+  localStorage.setItem(mobileMenuPinKey, "free");
+  return;
+}
+
+wordMenu.classList.add("mobile-pinned");
+
+if(pinMode === "bottom-collapsed"){
+  wordMenu.classList.add("pinned-bottom-collapsed", "collapsed");
+}else if(pinMode === "top-left"){
+  wordMenu.classList.add("pinned-top-left");
+  wordMenu.classList.remove("collapsed");
+}else if(pinMode === "top-right"){
+  wordMenu.classList.add("pinned-top-right");
+  wordMenu.classList.remove("collapsed");
+}
+
+localStorage.setItem(mobileMenuPinKey, pinMode);
+}
+
+function initMobileMenuOptions(){
+let sizeInput = document.getElementById("mobileMenuSize");
+let pinSelect = document.getElementById("mobileMenuPin");
+if(!sizeInput || !pinSelect) return;
+
+let savedScale = Number(localStorage.getItem(mobileMenuSizeKey));
+let nextScale = Number.isFinite(savedScale) ? clamp(savedScale, 0.20, 0.60) : 0.25;
+document.documentElement.style.setProperty("--mobile-menu-scale", nextScale.toFixed(2));
+sizeInput.value = nextScale.toFixed(2);
+
+sizeInput.addEventListener("input", function(){
+  let scale = clamp(Number(this.value), 0.20, 0.60);
+  document.documentElement.style.setProperty("--mobile-menu-scale", scale.toFixed(2));
+  localStorage.setItem(mobileMenuSizeKey, scale.toFixed(2));
+  applyMenuBounds();
+});
+
+let savedPin = localStorage.getItem(mobileMenuPinKey) || "free";
+pinSelect.value = savedPin;
+applyMobileMenuPin(savedPin);
+
+pinSelect.addEventListener("change", function(){
+  applyMobileMenuPin(this.value);
+  if(this.value === "free"){
+    applyMenuBounds();
+  }
+});
+}
+
 /* ===== menu drag ===== */
 
 let menu=wordMenu;
@@ -1153,6 +1332,7 @@ let offsetX,offsetY,dragging=false,dragPointerId=null;
 
 header.addEventListener("pointerdown", e => {
 if(e.target.closest("button, a, input, select")) return;
+if(wordMenu.classList.contains("mobile-pinned")) return;
 dragging=true;
 dragPointerId=e.pointerId;
 offsetX=e.clientX-menu.offsetLeft;
@@ -1165,8 +1345,15 @@ if(header.setPointerCapture){
 document.addEventListener("pointermove", e => {
 if(!dragging) return;
 if(dragPointerId !== null && e.pointerId !== dragPointerId) return;
-menu.style.left=(e.clientX-offsetX)+"px";
-menu.style.top=(e.clientY-offsetY)+"px";
+let menuRect = menu.getBoundingClientRect();
+let viewport = getViewportSize();
+let maxLeft = Math.max(0, viewport.width - menuRect.width);
+let maxTop = Math.max(0, viewport.height - menuRect.height);
+let nextLeft = clamp(e.clientX - offsetX, 0, maxLeft);
+let nextTop = clamp(e.clientY - offsetY, 0, maxTop);
+
+menu.style.left=nextLeft+"px";
+menu.style.top=nextTop+"px";
 menu.style.bottom="auto";
 menu.style.right="auto";
 });
@@ -1176,6 +1363,7 @@ if(!dragging) return;
 if(e && dragPointerId !== null && e.pointerId !== dragPointerId) return;
 dragging=false;
 dragPointerId=null;
+applyMenuBounds();
 }
 
 document.addEventListener("pointerup", stopMenuDrag);
@@ -1183,7 +1371,11 @@ document.addEventListener("pointercancel", stopMenuDrag);
 
 /* ===== collapse menu ===== */
 
-toggleMenu.onclick=()=>wordMenu.classList.toggle("collapsed");
+toggleMenu.onclick=()=>{
+  if(wordMenu.classList.contains("pinned-bottom-collapsed")) return;
+  wordMenu.classList.toggle("collapsed");
+  applyMenuBounds();
+};
 
 /* ===== rotate mandala ===== */
 
