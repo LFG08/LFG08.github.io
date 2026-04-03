@@ -364,7 +364,7 @@ font-family:inherit;
 @media (max-width: 900px) and (any-pointer: coarse){
   :root{
     --mandala-display-size:min(2048px, 100vw, 100svh);
-    --mobile-menu-ui-scale:0.7;
+    --mobile-menu-ui-scale:0.4;
   }
 
   html,
@@ -409,18 +409,18 @@ font-family:inherit;
     white-space:normal;
     overflow-wrap:anywhere;
     line-height:1.1;
-    font-size:calc(0.68rem * var(--mobile-menu-ui-scale));
+    font-size:calc(0.50rem * var(--mobile-menu-ui-scale));
   }
 
   #counter{
-    font-size:calc(0.62rem * var(--mobile-menu-ui-scale));
+    font-size:calc(0.50rem * var(--mobile-menu-ui-scale));
   }
 
   #wordMenu.pinned-bottom-collapsed{
     left:8px !important;
     right:auto !important;
-    bottom:8px !important;
-    top:auto !important;
+    bottom:auto !important;
+    top:500px !important;
     max-height:none;
   }
 
