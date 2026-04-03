@@ -12,6 +12,9 @@
 
 :root{
 --mandala-display-size:2048px; /* UPDATED: true 2048 display size for the final mandala, overlays, and coords */
+--mobile-menu-scale:0.25;
+--mobile-menu-ui-scale:1;
+--mobile-menu-base-width:250px;
 }
 
 /* ================= MANDALA ================= */
@@ -321,6 +324,76 @@ cursor:pointer;
 
 }
 
+#mobileMenuOptions{
+display:none;
+border-top:1px solid white;
+padding:calc(8px * var(--mobile-menu-ui-scale));
+gap:calc(6px * var(--mobile-menu-ui-scale));
+flex-direction:column;
+font-size:inherit;
+font-family:inherit;
+}
+
+#mobileMenuOptions label{
+display:flex;
+flex-direction:column;
+gap:calc(4px * var(--mobile-menu-ui-scale));
+font-size:inherit;
+}
+
+#mobileMenuOptions input,
+#mobileMenuOptions select{
+width:100%;
+font-size:inherit;
+font-family:inherit;
+}
+
+@media (max-width: 900px) and (any-pointer: coarse){
+  #wordMenu{
+    width:max(
+      calc(var(--mobile-menu-base-width) * var(--mobile-menu-ui-scale)),
+      calc(var(--mandala-display-size) * var(--mobile-menu-scale))
+    );
+    max-width:calc(100vw - 16px);
+    max-height:40vh;
+    font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
+  }
+
+  #wordMenu.pinned-bottom-collapsed{
+    left:8px !important;
+    right:auto !important;
+    top:auto !important;
+    bottom:8px !important;
+    max-height:none;
+  }
+
+  #wordMenu.pinned-top-left{
+    top:8px !important;
+    left:8px !important;
+    right:auto !important;
+    bottom:auto !important;
+  }
+
+  #wordMenu.pinned-top-right{
+    top:8px !important;
+    right:8px !important;
+    left:auto !important;
+    bottom:auto !important;
+  }
+
+  #mobileMenuOptions{
+    display:flex;
+  }
+
+  #overlaySelector,
+  #clearButton,
+  #toggleClickMode,
+  #rotateMandala{
+    padding:calc(8px * var(--mobile-menu-ui-scale)) calc(6px * var(--mobile-menu-ui-scale));
+    font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
+  }
+}
+
 </style>
 
 </head>
@@ -401,6 +474,23 @@ cursor:pointer;
 <option value="mandala_gabarito_2.png">Azul</option>
 <option value="mandala_gabarito_3.png">Amarelo</option>
 </select>
+
+<div id="mobileMenuOptions">
+  <label for="mobileMenuSize">
+    Tamanho menu (mobile)
+    <input id="mobileMenuSize" type="range" min="0.20" max="0.60" step="0.01" value="0.25">
+  </label>
+
+  <label for="mobileMenuPin">
+    Fixação menu (mobile)
+    <select id="mobileMenuPin">
+      <option value="free">Livre (arrastar)</option>
+      <option value="bottom-collapsed">Recolhido inferior</option>
+      <option value="top-left">Superior esquerdo</option>
+      <option value="top-right">Superior direito</option>
+    </select>
+  </label>
+</div>
 
 </div>
 
@@ -537,7 +627,10 @@ document.addEventListener("dragstart", e=>e.preventDefault());
 const overlayStorageKey = "MAR_selectedOverlay";
 const guessStorageKey = "MAR_wordGuesses";
 const hintStorageKey = "MAR_wordHints";
+const progressStorageKey = "marPuzzleProgress";
 const defaultOverlay = "mandala_gabarito_1.png";
+const mobileMenuSizeKey = "MAR_mobileMenuSize";
+const mobileMenuPinKey = "MAR_mobileMenuPin";
 
 const regionDefinitions = [
 { id: 1, minX: 1, maxX: 2044, minY: 4, maxY: 695 },
@@ -579,6 +672,8 @@ overlaySelector.dispatchEvent(new Event("change"));
 
 /* load answers AFTER overlay is ready */
 loadProgress();
+initMobileMenuOptions();
+applyMenuBounds();
 });
 
 
@@ -605,7 +700,7 @@ Object.values(answerClips).forEach(clip=>{
 clip.style.backgroundImage = "url('" + currentOverlay + "')";
 });
 
-localStorage.setItem("MAR_selectedOverlay", currentOverlay);
+localStorage.setItem(overlayStorageKey, currentOverlay);
 };
 
 /* ===== menu items ===== */
@@ -727,6 +822,80 @@ return parsed && typeof parsed === "object" ? parsed : null;
 }catch{
 return null;
 }
+}
+
+function clamp(value, min, max){
+return Math.min(Math.max(value, min), max);
+}
+
+function isMobileViewport(){
+return window.matchMedia("(max-width: 900px) and (any-pointer: coarse)").matches;
+}
+
+function setMobileMenuScaleVars(menuScale){
+let safeScale = clamp(menuScale, 0.20, 0.60);
+document.documentElement.style.setProperty("--mobile-menu-scale", safeScale.toFixed(2));
+let uiScale = isMobileViewport() ? clamp(safeScale / 0.25, 0.85, 1.65) : 1;
+document.documentElement.style.setProperty("--mobile-menu-ui-scale", uiScale.toFixed(2));
+}
+
+function applyMobileMenuPin(pinMode){
+let menu = wordMenu;
+menu.classList.remove("pinned-bottom-collapsed", "pinned-top-left", "pinned-top-right");
+
+if(!isMobileViewport() || pinMode === "free"){
+  localStorage.setItem(mobileMenuPinKey, "free");
+  return;
+}
+
+if(pinMode === "bottom-collapsed"){
+  menu.classList.add("collapsed", "pinned-bottom-collapsed");
+}else if(pinMode === "top-left"){
+  menu.classList.remove("collapsed");
+  menu.classList.add("pinned-top-left");
+}else if(pinMode === "top-right"){
+  menu.classList.remove("collapsed");
+  menu.classList.add("pinned-top-right");
+}
+
+localStorage.setItem(mobileMenuPinKey, pinMode);
+}
+
+function applyMenuBounds(){
+if(isMobileViewport() && document.getElementById("mobileMenuPin")?.value !== "free") return;
+let maxLeft = Math.max(0, window.innerWidth - wordMenu.offsetWidth);
+let maxTop = Math.max(0, window.innerHeight - wordMenu.offsetHeight);
+let currentLeft = parseFloat(wordMenu.style.left || wordMenu.offsetLeft || 0);
+let currentTop = parseFloat(wordMenu.style.top || wordMenu.offsetTop || 0);
+wordMenu.style.left = clamp(currentLeft, 0, maxLeft) + "px";
+wordMenu.style.top = clamp(currentTop, 0, maxTop) + "px";
+}
+
+function initMobileMenuOptions(){
+let sizeInput = document.getElementById("mobileMenuSize");
+let pinSelect = document.getElementById("mobileMenuPin");
+if(!sizeInput || !pinSelect) return;
+
+let savedScale = Number(localStorage.getItem(mobileMenuSizeKey));
+let scale = Number.isFinite(savedScale) && savedScale >= 0.2 && savedScale <= 0.6 ? savedScale : 0.25;
+sizeInput.value = scale.toFixed(2);
+setMobileMenuScaleVars(scale);
+
+sizeInput.addEventListener("input", () => {
+  let nextScale = Number(sizeInput.value || 0.25);
+  setMobileMenuScaleVars(nextScale);
+  localStorage.setItem(mobileMenuSizeKey, nextScale.toFixed(2));
+  applyMenuBounds();
+});
+
+let savedPin = localStorage.getItem(mobileMenuPinKey) || "free";
+pinSelect.value = savedPin;
+applyMobileMenuPin(savedPin);
+
+pinSelect.addEventListener("change", () => {
+  applyMobileMenuPin(pinSelect.value);
+  applyMenuBounds();
+});
 }
 
 function findAreaByWord(word){
@@ -1051,7 +1220,7 @@ alert("fim! 🎉🎉");
 
 function loadProgress(){
 
-let words = readStoredObject("marPuzzleProgress");
+let words = readStoredObject(progressStorageKey);
 if(!Array.isArray(words)) return;
 
 words.forEach(word => {
@@ -1098,7 +1267,7 @@ document.querySelectorAll("#wordList li").forEach(li => {
 
 });
 
-localStorage.removeItem("marPuzzleProgress");
+localStorage.removeItem(progressStorageKey);
 localStorage.removeItem(guessStorageKey);
 localStorage.removeItem(hintStorageKey);
 updateCounter();
@@ -1108,7 +1277,7 @@ function confirmReset(){
 
 if(confirm("Reset?")){
 clearAll();
-localStorage.removeItem("marPuzzleProgress");
+localStorage.removeItem(progressStorageKey);
 }
 
   }
@@ -1121,6 +1290,7 @@ let header=menuHeader;
 let offsetX,offsetY,dragging=false;
 
 header.onmousedown=e=>{
+if(isMobileViewport() && document.getElementById("mobileMenuPin")?.value !== "free") return;
 dragging=true;
 offsetX=e.clientX-menu.offsetLeft;
 offsetY=e.clientY-menu.offsetTop;
@@ -1130,13 +1300,17 @@ document.onmousemove=e=>{
 if(!dragging) return;
 menu.style.left=(e.clientX-offsetX)+"px";
 menu.style.top=(e.clientY-offsetY)+"px";
+applyMenuBounds();
 };
 
 document.onmouseup=()=>dragging=false;
 
 /* ===== collapse menu ===== */
 
-toggleMenu.onclick=()=>wordMenu.classList.toggle("collapsed");
+toggleMenu.onclick=()=>{
+wordMenu.classList.toggle("collapsed");
+applyMenuBounds();
+};
 
 /* ===== rotate mandala ===== */
 
@@ -1188,12 +1362,24 @@ isDragging=false;
 document.body.classList.remove("dragging");
 });
 
+window.addEventListener("resize",()=>{
+let sizeInput = document.getElementById("mobileMenuSize");
+if(sizeInput){
+  setMobileMenuScaleVars(Number(sizeInput.value || 0.25));
+}
+let pinSelect = document.getElementById("mobileMenuPin");
+if(pinSelect){
+  applyMobileMenuPin(pinSelect.value);
+}
+applyMenuBounds();
+});
+
 /* ===== savePuzzleProgress ===== */
 
 function saveProgress(){
 
 localStorage.setItem(
-"marPuzzleProgress",
+progressStorageKey,
 JSON.stringify(Object.keys(answerClips)
 .filter(w => answerClips[w].classList.contains("visible")))
 );
