@@ -357,7 +357,7 @@ width:100%;
     bottom:8px;
     left:8px;
     right:auto;
-    width:calc(var(--mobile-menu-base-width) * (var(--mobile-menu-scale) / 0.25));
+    width:calc(var(--mandala-render-size) * var(--mobile-menu-scale));
     max-height:40vh;
     font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
   }
@@ -1355,7 +1355,7 @@ requestAnimationFrame(autoFitMobileMenuContent);
 }
 
 function getBaseMobileUiScale(scale){
-return clamp(scale / 0.25, 0.45, 1.9);
+return clamp((scale / 0.25) * 0.62, 0.36, 1.2);
 }
 
 function autoFitMobileMenuContent(){
