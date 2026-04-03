@@ -520,16 +520,58 @@ const hintRegionMapCoords = [
 { id: 3, coords: [1, 1361, 2046, 2046] }
 ];
 
-const regionDefinitions = hintRegionMapCoords.map(region => {
-let [x1, y1, x2, y2] = region.coords;
+const baseMandalaSize = 2048;
+let regionDefinitions = [];
+
+function getHintScale(){
+let container = document.querySelector(".container");
+if(!container) return 1;
+return container.clientWidth / baseMandalaSize;
+}
+
+function normalizeBounds(x1, y1, x2, y2){
 return {
-  id: region.id,
   minX: Math.min(x1, x2),
   maxX: Math.max(x1, x2),
   minY: Math.min(y1, y2),
   maxY: Math.max(y1, y2)
 };
+}
+
+function rebuildRegionDefinitions(){
+
+let scale = getHintScale();
+
+regionDefinitions = hintRegionMapCoords.map(region => {
+let [x1, y1, x2, y2] = region.coords;
+let scaled = normalizeBounds(x1 * scale, y1 * scale, x2 * scale, y2 * scale);
+
+return {
+  id: region.id,
+  ...scaled
+};
 });
+}
+
+function layoutHintRegions(){
+
+let scale = getHintScale();
+
+hintRegionMapCoords.forEach(region => {
+let regionEl = document.getElementById("regionHint-" + region.id);
+if(!regionEl) return;
+
+let [x1, y1, x2, y2] = region.coords;
+let bounds = normalizeBounds(x1, y1, x2, y2);
+
+regionEl.style.left = (bounds.minX * scale) + "px";
+regionEl.style.top = (bounds.minY * scale) + "px";
+regionEl.style.width = ((bounds.maxX - bounds.minX) * scale) + "px";
+regionEl.style.height = ((bounds.maxY - bounds.minY) * scale) + "px";
+});
+
+rebuildRegionDefinitions();
+}
 
 /* load */
 window.addEventListener("load", function(){
@@ -561,10 +603,13 @@ if(savedOverlay && validOverlays.includes(savedOverlay)){
 
 /* apply overlay immediately */
 overlaySelector.dispatchEvent(new Event("change"));
+layoutHintRegions();
 
 /* load answers AFTER overlay is ready */
 loadProgress();
 });
+
+window.addEventListener("resize", layoutHintRegions);
 
 
 /* ===== toggle mode ===== */
