@@ -145,11 +145,16 @@ cursor:grabbing;
   align-items:center;
   justify-content:space-between;
   gap:6px;
+  padding-right:calc(4px * var(--mobile-menu-ui-scale));
+  box-sizing:border-box;
 }
 /* LEFT SIDE */
 .title {
-  flex-shrink:inherit;
+  flex:1 1 auto;
+  min-width:0;
   white-space: nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
   margin-right: calc(4px * var(--mobile-menu-ui-scale));
   margin-left: calc(8px * var(--mobile-menu-ui-scale));
   margin-top: calc(8px * var(--mobile-menu-ui-scale));
@@ -202,7 +207,7 @@ cursor:grabbing;
   background: #ccc;
   line-height: calc(16px * var(--mobile-menu-ui-scale));
   padding: 0;
-  margin-right: calc(4px * var(--mobile-menu-ui-scale));
+  margin-right: 0;
 }
 
 .tooltip {
@@ -342,6 +347,15 @@ font-family:inherit;
     width:calc(var(--mandala-display-size) * var(--mobile-menu-scale));
     max-height:40vh;
     font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
+  }
+
+  .right{
+    gap:calc(3px * var(--mobile-menu-ui-scale));
+    margin-right:calc(4px * var(--mobile-menu-ui-scale));
+  }
+
+  .title{
+    margin-right:calc(2px * var(--mobile-menu-ui-scale));
   }
 
   #wordMenu.pinned-bottom-collapsed{
