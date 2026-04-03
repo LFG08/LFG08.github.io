@@ -331,24 +331,28 @@ border-top:1px solid white;
 padding:calc(8px * var(--mobile-menu-ui-scale));
 gap:calc(6px * var(--mobile-menu-ui-scale));
 flex-direction:column;
+font-size:inherit;
+font-family:inherit;
 }
 
 #mobileMenuOptions label{
 display:flex;
 flex-direction:column;
 gap:calc(4px * var(--mobile-menu-ui-scale));
-font-size:calc(0.8rem * var(--mobile-menu-ui-scale));
+font-size:inherit;
 }
 
 #mobileMenuOptions input,
 #mobileMenuOptions select{
 width:100%;
+font-size:inherit;
+font-family:inherit;
 }
 
-@media (max-width: 900px){
+@media (max-width: 900px) and (any-pointer: coarse){
   :root{
     --mandala-display-size:min(2048px, 100vw);
-  }
+  }  
   
   #wordMenu{
     top:auto;
@@ -1279,7 +1283,7 @@ clearAll();
 }
 
 function isMobileViewport(){
-return window.matchMedia("(max-width: 900px)").matches;
+return window.matchMedia("(max-width: 900px) and (any-pointer: coarse)").matches;
 }
 
 function clamp(value, min, max){
@@ -1303,12 +1307,8 @@ return {
 function applyMenuBounds(){
 if(wordMenu.classList.contains("mobile-pinned")) return;
 
-let menuRect = wordMenu.getBoundingClientRect();
-let viewport = getViewportSize();
 let currentLeft = wordMenu.offsetLeft;
 let currentTop = wordMenu.offsetTop;
-let maxTop = Math.max(0, viewport.height - menuRect.height);
-
 let boundedTop = clamp(currentTop, 0, maxTop);
 
 wordMenu.style.left = currentLeft + "px";
@@ -1429,12 +1429,10 @@ if(header.setPointerCapture){
 document.addEventListener("pointermove", e => {
 if(!dragging) return;
 if(dragPointerId !== null && e.pointerId !== dragPointerId) return;
-let menuRect = menu.getBoundingClientRect();
-let viewport = getViewportSize();
-let maxTop = Math.max(0, viewport.height - menuRect.height);
-let nextLeft = e.clientX - offsetX;
-let nextTop = clamp(e.clientY - offsetY, 0, maxTop);
 
+let nextLeft = e.clientX - offsetX;
+let nextTop = Math.max(e.clientY - offsetY, 0);
+  
 menu.style.left=nextLeft+"px";
 menu.style.top=nextTop+"px";
 menu.style.bottom="auto";
