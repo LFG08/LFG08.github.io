@@ -658,16 +658,8 @@ localStorage.setItem(guessStorageKey, JSON.stringify(guesses));
 
 function loadGuesses(){
 
-let saved = localStorage.getItem(guessStorageKey);
-if(!saved) return;
-
-let guesses;
-
-try{
-  guesses = JSON.parse(saved);
-}catch{
-  return;
-}
+let guesses = readStoredObject(guessStorageKey);
+if(!guesses) return;
 
 document.querySelectorAll("#wordList li.hidden-word").forEach(li => {
 
@@ -696,16 +688,8 @@ localStorage.setItem(hintStorageKey, JSON.stringify(hints));
 
 function loadHints(){
 
-let saved = localStorage.getItem(hintStorageKey);
-if(!saved) return;
-
-let hints;
-
-try{
-  hints = JSON.parse(saved);
-}catch{
-  return;
-}
+let hints = readStoredObject(hintStorageKey);
+if(!hints) return;
 
 document.querySelectorAll("#wordList li.hidden-word").forEach(li => {
 
@@ -720,6 +704,19 @@ renderMenuWord(li);
 
 function findMenuItemByWord(word){
 return Array.from(document.querySelectorAll("#wordList li")).find(li => li.dataset.hidden === word) || null;
+}
+
+function readStoredObject(storageKey){
+
+let saved = localStorage.getItem(storageKey);
+if(!saved) return null;
+
+try{
+let parsed = JSON.parse(saved);
+return parsed && typeof parsed === "object" ? parsed : null;
+}catch{
+return null;
+}
 }
 
 function findAreaByWord(word){
@@ -1018,10 +1015,8 @@ alert("fim! 🎉🎉");
 
 function loadProgress(){
 
-let saved = localStorage.getItem("marPuzzleProgress");
-if(!saved) return;
-
-let words = JSON.parse(saved);
+let words = readStoredObject("marPuzzleProgress");
+if(!Array.isArray(words)) return;
 
 words.forEach(word => {
 
