@@ -359,10 +359,30 @@ font-family:inherit;
 }
 
 @media (max-width: 900px) and (any-pointer: coarse){
-  #wordMenu{
+  :root{
+    --mandala-display-size:min(2048px, 100vw);
+  }
+
+  html,
+  body{
+    margin:0;
+    padding:0;
+    height:auto;
+  }
+
+  .container img{
+    display:block;
+  }
+
+ #wordMenu{
+    top:auto;
+    top:8px;
+    left:8px;
+    bottom: auto;
+    right:auto;
     width:max(
       calc(var(--mobile-menu-base-width) * var(--mobile-menu-ui-scale)),
-      calc(var(--mandala-display-size) * var(--mobile-menu-scale))
+      calc(var(--mandala-render-size) * var(--mobile-menu-scale))
     );
     max-width:calc(100vw - 16px);
     max-height:40vh;
@@ -372,8 +392,8 @@ font-family:inherit;
   #wordMenu.pinned-bottom-collapsed{
     left:8px !important;
     right:auto !important;
-    top:auto !important;
-    bottom:8px !important;
+    top:655px !important;
+    bottom:auto !important;
     max-height:none;
   }
 
@@ -394,6 +414,15 @@ font-family:inherit;
   #mobileMenuOptions{
     display:flex;
   }
+
+  #mobileMenuOptions label{
+    font-size: inherit
+  }
+
+  .tooltip.help-tooltip{
+    width:230px;
+  }
+
 
   #overlaySelector,
   #clearButton,
