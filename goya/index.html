@@ -735,17 +735,7 @@ if(pinSelect){
 applyMenuBounds();
 });
 
-document.addEventListener("wheel", e => {
-if(isMobileViewport()) return;
-if(!e.ctrlKey) return;
-if(e.target.closest("#wordMenu")) return;
-
-e.preventDefault();
-
-let direction = e.deltaY < 0 ? 1 : -1;
-setMandalaZoom(mandalaZoom + (direction * mandalaZoomStep));
-}, { passive: false });
-
+/* desktop intentionally uses browser-native zoom behavior (same as other mandalas) */
 
 /* ===== toggle mode ===== */
 
