@@ -5,9 +5,10 @@
 
 <title>Mar Grego</title>
 <link rel="icon" type="image/png" href="/VN.png" sizes="32x32">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preload" as="image" href="mandala_mar.png"><!-- UPDATED: preload the main mandala image so large source files start loading earlier -->
 <link rel="preload" as="image" href="mandala_gabarito_1.png"><!-- UPDATED: preload the default answer overlay because it is used on first load -->
-  
+
 <style>
 
 :root{
@@ -111,7 +112,7 @@ cursor:grabbing;
 /* ================= MENU ================= */
 
 #wordMenu{
-  position:fixed;
+  position:absolute;
   top:120px;
   left:30px;   /* ← anchor it here */
   width: 250px;;
@@ -130,11 +131,19 @@ cursor:grabbing;
   z-index:20;
 }
 
+#wordMenu.mobile-pinned{
+  left:auto;
+  right:auto;
+  top:auto;
+  bottom:auto;
+}
+
 #menuHeader{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:6px;
+  touch-action:none;
 }
 /* LEFT SIDE */
 .title {
@@ -176,12 +185,13 @@ cursor:grabbing;
 }
 
 .info-btn,
-.menu-btn{
-  
+.menu-btn,
+#toggleMenu{
+
   display: flex;              /* KEY */
   align-items: center;        /* vertical center */
   justify-content: center;    /* horizontal center */
-  
+
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -421,8 +431,8 @@ font-family:inherit;
     <button class="info-btn">?</button>
 
     <span class="tooltip help-tooltip">
-      Como jogar: Encontre as palavras e elementos escondidos. Caso necessário, utilize o menu para registrar seu palpite. 
-      Para dicas, clique com o botão direito do mouse no menu.  
+      Como jogar: Encontre as palavras e elementos escondidos. Caso necessário, utilize o menu para registrar seu palpite.
+      Para dicas, clique com o botão direito do mouse no menu.
       1° Dica: Região onde o elemento se encontra; 2° Dica: Revela qual o nome do elemento escondido no menu. Boa Sorte!
     </span>
   </span>
@@ -464,7 +474,7 @@ font-family:inherit;
 </ul>
 
 <div id="wordTooltip"></div>
-  
+
 <button id="clearButton" onclick="confirmReset()">Reset</button>
 <button id="toggleClickMode">Desmarcar: ON</button>
 <button id="rotateMandala">Rotate (0°)</button>
@@ -523,7 +533,7 @@ font-family:inherit;
     <area id="area-Caranguejo"
     coords="1959,1133,1966,1107,1984,1109,1984,1138"
     shape="poly" onclick="toggleAnswer(this,'Caranguejo'); return false;">
-  
+
     <area id="area-Cavalo-Marinho"
     coords="658,734,667,745,683,763,700,768,703,777,714,792,736,792,745,810,745,832,728,839,710,837,696,842,678,842,663,824,663,810,633,790,627,770,636,756,645,747"
     shape="poly" onclick="toggleAnswer(this,'Cavalo Marinho'); return false;">
@@ -631,6 +641,7 @@ const progressStorageKey = "marPuzzleProgress";
 const defaultOverlay = "mandala_gabarito_1.png";
 const mobileMenuSizeKey = "MAR_mobileMenuSize";
 const mobileMenuPinKey = "MAR_mobileMenuPin";
+let isBootstrapping = true;
 
 const regionDefinitions = [
 { id: 1, minX: 1, maxX: 2044, minY: 4, maxY: 695 },
@@ -666,7 +677,7 @@ if(savedOverlay && validOverlays.includes(savedOverlay)){
   currentOverlay = defaultOverlay;
   overlaySelector.value = defaultOverlay;
 }
-  
+
 /* apply overlay immediately */
 overlaySelector.dispatchEvent(new Event("change"));
 
@@ -674,6 +685,8 @@ overlaySelector.dispatchEvent(new Event("change"));
 loadProgress();
 initMobileMenuOptions();
 applyMenuBounds();
+isBootstrapping = false;
+updateCounter();
 });
 
 
@@ -841,12 +854,14 @@ document.documentElement.style.setProperty("--mobile-menu-ui-scale", uiScale.toF
 
 function applyMobileMenuPin(pinMode){
 let menu = wordMenu;
-menu.classList.remove("pinned-bottom-collapsed", "pinned-top-left", "pinned-top-right");
+menu.classList.remove("mobile-pinned", "pinned-bottom-collapsed", "pinned-top-left", "pinned-top-right");
 
 if(!isMobileViewport() || pinMode === "free"){
   localStorage.setItem(mobileMenuPinKey, "free");
   return;
 }
+
+menu.classList.add("mobile-pinned");
 
 if(pinMode === "bottom-collapsed"){
   menu.classList.add("collapsed", "pinned-bottom-collapsed");
@@ -862,7 +877,7 @@ localStorage.setItem(mobileMenuPinKey, pinMode);
 }
 
 function applyMenuBounds(){
-if(isMobileViewport() && document.getElementById("mobileMenuPin")?.value !== "free") return;
+if(isMobileViewport() && wordMenu.classList.contains("mobile-pinned")) return;
 let maxLeft = Math.max(0, window.innerWidth - wordMenu.offsetWidth);
 let maxTop = Math.max(0, window.innerHeight - wordMenu.offsetHeight);
 let currentLeft = parseFloat(wordMenu.style.left || wordMenu.offsetLeft || 0);
@@ -1136,7 +1151,7 @@ applyHint(item, nextHint);
 });
 
 });
-  
+
 /* ===== answer highlights ===== */
 
 const answerClips={};
@@ -1195,7 +1210,7 @@ else if(allowToggleOff){
 updateCounter();
 saveProgress();
 }
-  
+
 /*counter*/
 const totalWords = document.querySelectorAll("#wordList li").length;
 
@@ -1209,6 +1224,7 @@ found + " / " + totalWords;
   /* PUZZLE COMPLETE MESSAGE */
 
 if(found === totalWords && totalWords > 0){
+if(isBootstrapping) return;
 
 setTimeout(function(){
 alert("fim! 🎉🎉");
@@ -1230,7 +1246,7 @@ let area = findAreaByWord(word) || document.getElementById("area-" + word);
 if(area){
 
 // ONLY toggle if its not already visible
-if(!answerClips[word] || 
+if(!answerClips[word] ||
    !answerClips[word].classList.contains("visible")){
 
 toggleAnswer(area, word);
@@ -1284,26 +1300,42 @@ localStorage.removeItem(progressStorageKey);
 
 /* ===== menu drag ===== */
 
-let menu=wordMenu;
-let header=menuHeader;
+let menu = wordMenu;
+let header = menuHeader;
 
-let offsetX,offsetY,dragging=false;
+let offsetX = 0;
+let offsetY = 0;
+let dragging = false;
 
-header.onmousedown=e=>{
-if(isMobileViewport() && document.getElementById("mobileMenuPin")?.value !== "free") return;
-dragging=true;
-offsetX=e.clientX-menu.offsetLeft;
-offsetY=e.clientY-menu.offsetTop;
-};
+function startMenuDrag(clientX, clientY){
+if(isMobileViewport() && wordMenu.classList.contains("mobile-pinned")) return;
+dragging = true;
+offsetX = clientX - menu.offsetLeft;
+offsetY = clientY - menu.offsetTop;
+}
 
-document.onmousemove=e=>{
+header.addEventListener("mousedown", e => startMenuDrag(e.clientX, e.clientY));
+header.addEventListener("touchstart", e => {
+if(!e.touches[0]) return;
+startMenuDrag(e.touches[0].clientX, e.touches[0].clientY);
+}, { passive: true });
+
+document.addEventListener("mousemove", e => {
 if(!dragging) return;
-menu.style.left=(e.clientX-offsetX)+"px";
-menu.style.top=(e.clientY-offsetY)+"px";
+menu.style.left = (e.clientX - offsetX) + "px";
+menu.style.top = (e.clientY - offsetY) + "px";
 applyMenuBounds();
-};
+});
 
-document.onmouseup=()=>dragging=false;
+document.addEventListener("touchmove", e => {
+if(!dragging || !e.touches[0]) return;
+menu.style.left = (e.touches[0].clientX - offsetX) + "px";
+menu.style.top = (e.touches[0].clientY - offsetY) + "px";
+applyMenuBounds();
+}, { passive: true });
+
+document.addEventListener("mouseup", () => dragging = false);
+document.addEventListener("touchend", () => dragging = false);
 
 /* ===== collapse menu ===== */
 
@@ -1377,6 +1409,7 @@ applyMenuBounds();
 /* ===== savePuzzleProgress ===== */
 
 function saveProgress(){
+if(isBootstrapping) return;
 
 localStorage.setItem(
 progressStorageKey,
