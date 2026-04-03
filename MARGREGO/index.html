@@ -375,7 +375,7 @@ font-family:inherit;
 
   #menuHeader{
     gap:1px;
-    padding-right:2px;
+    padding-right:1px;
   }
 
   .title{
@@ -388,8 +388,10 @@ font-family:inherit;
   }
 
   .right{
-    gap:1px;
-    margin-right:2px;
+    display:flex;
+    align-items:center;
+    gap:2px;
+    margin-right:3px;
   }
 
   #counter{
@@ -400,12 +402,18 @@ font-family:inherit;
   .info-btn,
   .menu-btn,
   #toggleMenu{
-    width:10px;
-    height:10px;
-    min-width:10px;
+    width:14px;
+    height:14px;
+    min-width:14px;
     font-size:calc(0.5rem * var(--mobile-menu-ui-scale));
-    line-height:10px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    
+    line-height:1;
     margin-right:1px;
+    overflow:hidden;
   }
   
   #wordMenu.pinned-bottom-collapsed{
@@ -425,8 +433,8 @@ font-family:inherit;
 
   #wordMenu.pinned-top-right{
     top:8px !important;
-    left:500px !important;
-    right:auto !important;
+    left:auto !important;
+    right:8px !important;
     bottom:auto !important;
   }
 
@@ -448,7 +456,7 @@ font-family:inherit;
   #toggleClickMode,
   #rotateMandala{
     padding:calc(8px * var(--mobile-menu-ui-scale)) calc(6px * var(--mobile-menu-ui-scale));
-    font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
+    font-size:calc(0.5rem * var(--mobile-menu-ui-scale));
   }
 }
 
