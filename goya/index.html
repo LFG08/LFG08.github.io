@@ -600,8 +600,6 @@ const hintStorageKey = "GOYA_wordHints";
 const progressStorageKey = "goyaPuzzleProgress";
 const mobileMenuSizeKey = "GOYA_mobileMenuSize";
 const mobileMenuPinKey = "GOYA_mobileMenuPin";
-const mandalaZoomStorageKey = "GOYA_desktopMandalaZoom";
-const mobileDefaultMandalaZoom = 1.5;
 const defaultOverlay = "mandala_gabarito_1.png";
 const minMandalaZoom = 1;
 const maxMandalaZoom = 3;
@@ -623,20 +621,13 @@ if(!container) return;
 container.style.transform = "rotate(" + rotation + "deg)";
 }
 
-function setMandalaZoom(nextZoom, { persist = true } = {}){
+function setMandalaZoom(nextZoom){
 mandalaZoom = clamp(nextZoom, minMandalaZoom, maxMandalaZoom);
 document.documentElement.style.setProperty("--mandala-zoom", mandalaZoom.toFixed(2));
-if(!isMobileViewport()){
-  document.documentElement.style.setProperty("--mobile-menu-ui-scale", mandalaZoom.toFixed(2));
-}
 layoutHintRegions();
 
 if(typeof imageMapResize === "function"){
   imageMapResize();
-}
-
-if(persist){
-  localStorage.setItem(mandalaZoomStorageKey, mandalaZoom.toFixed(2));
 }
 }
 
@@ -707,12 +698,7 @@ loadHints();
 updateCounter();
 initMobileMenuOptions();
 
-if(!isMobileViewport()){
-  setMandalaZoom(1, { persist: false });
-  localStorage.removeItem(mandalaZoomStorageKey);
-}else{
-  setMandalaZoom(mobileDefaultMandalaZoom, { persist: false });
-}
+setMandalaZoom(1);
 
 /* restore overlay OR set default */
 let savedOverlay = localStorage.getItem(overlayStorageKey);
@@ -738,11 +724,11 @@ loadProgress();
 
 window.addEventListener("resize", () => {
 if(isMobileViewport()){
-  if(mandalaZoom !== mobileDefaultMandalaZoom){
-    setMandalaZoom(mobileDefaultMandalaZoom, { persist: false });
+  if(mandalaZoom !== 1){
+    setMandalaZoom(1);
   }
 }else{
-  setMandalaZoom(mandalaZoom, { persist: false });
+  setMandalaZoom(mandalaZoom);
 }
 layoutHintRegions();
 let sizeInput = document.getElementById("mobileMenuSize");
