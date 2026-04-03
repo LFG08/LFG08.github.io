@@ -150,8 +150,11 @@ cursor:grabbing;
 }
 /* LEFT SIDE */
 .title {
-  flex-shrink:inherit;
+  flex:1 1 auto;
+  min-width:0;
   white-space: nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
   margin-right:calc(4px * var(--mobile-menu-ui-scale));
   margin-left:calc(8px * var(--mobile-menu-ui-scale));
   margin-top:calc(8px * var(--mobile-menu-ui-scale));
@@ -332,13 +335,17 @@ font-family:inherit;
     display:block;
   }
 
-  #wordMenu{
+ #wordMenu{
     top:auto;
     top:8px;
     left:8px;
     bottom: auto;
     right:auto;
-    width:calc(var(--mandala-render-size) * var(--mobile-menu-scale));
+    width:max(
+      calc(var(--mobile-menu-base-width) * var(--mobile-menu-ui-scale)),
+      calc(var(--mandala-render-size) * var(--mobile-menu-scale))
+    );
+    max-width:calc(100vw - 16px);
     max-height:40vh;
     font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
   }
