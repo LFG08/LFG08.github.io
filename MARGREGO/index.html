@@ -396,14 +396,31 @@ font-family:inherit;
     width:min(calc(var(--mobile-menu-base-width) * var(--mobile-menu-ui-scale)), calc(var(--mandala-display-size) * 0.24));
     max-width:calc(var(--mandala-display-size) * 0.24);
     max-height:40vh;
-    font-size:calc(0.72rem * var(--mobile-menu-ui-scale));
+    font-size:calc(0.66rem * var(--mobile-menu-ui-scale));
+    overflow-x:hidden;
+  }
+
+  #menuHeader,
+  .right{
+    min-width:0;
+  }
+
+  .title{
+    white-space:normal;
+    overflow-wrap:anywhere;
+    line-height:1.1;
+    font-size:calc(0.68rem * var(--mobile-menu-ui-scale));
+  }
+
+  #counter{
+    font-size:calc(0.62rem * var(--mobile-menu-ui-scale));
   }
 
   #wordMenu.pinned-bottom-collapsed{
     left:8px !important;
     right:auto !important;
-    top:655px !important;
-    bottom:auto !important;
+    bottom:8px !important;
+    top:auto !important;
     max-height:none;
   }
 
