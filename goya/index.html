@@ -1154,7 +1154,10 @@ applyHint(item, nextHint, wordForHint);
 
 const answerClips={};
 
-function toggleAnswer(area,word){
+function toggleAnswer(area,word,options={}){
+
+let forceVisible = options.forceVisible;
+let persist = options.persist !== false;
 
 if(!area.coords) return;
 
@@ -1181,29 +1184,36 @@ answerClips[word]=clip;
 
 let menuWord = menuItems["menu-"+word];
 let isVisible = answerClips[word].classList.contains("visible");
+let shouldShow = forceVisible === true ? true : !isVisible;
 
-if(!isVisible){
+if(shouldShow && !isVisible){
 
   answerClips[word].classList.add("visible");
-  menuItems["menu-"+word].classList.add("found");
+  if(menuWord){
+    menuWord.classList.add("found");
+  }
 
-  if(menuWord.classList.contains("hidden-word")){
+  if(menuWord && menuWord.classList.contains("hidden-word")){
     renderMenuWord(menuWord);
   }
 }
 
-else if(allowToggleOff){
+else if(!shouldShow && allowToggleOff){
 
   answerClips[word].classList.remove("visible");
-  menuItems["menu-"+word].classList.remove("found");
+  if(menuWord){
+    menuWord.classList.remove("found");
+  }
 
-  if(menuWord.classList.contains("hidden-word")){
+  if(menuWord && menuWord.classList.contains("hidden-word")){
     renderMenuWord(menuWord);
   }
 }
 
 updateCounter();
-saveProgress();
+if(persist){
+  saveProgress();
+}
 }
 
 /*counter*/
@@ -1227,8 +1237,16 @@ alert("fim! 🎉🎉");
 
 function loadProgress(){
 
-let words = readStoredObject(progressStorageKey);
-if(!Array.isArray(words)) return;
+let savedProgress = readStoredObject(progressStorageKey);
+if(!savedProgress) return;
+
+let words = Array.isArray(savedProgress)
+? savedProgress
+: Object.entries(savedProgress)
+  .filter(([, isFound]) => Boolean(isFound))
+  .map(([word]) => word);
+
+if(!words.length) return;
 
 words.forEach(word => {
 
@@ -1238,10 +1256,12 @@ if(area){
 
 if(!answerClips[word] || !answerClips[word].classList.contains("visible")){
 
-toggleAnswer(area, word);
+toggleAnswer(area, word, { forceVisible: true, persist: false });
 }
 }
 });
+
+updateCounter();
 }
 
 /* ===== reset ===== */
@@ -1309,9 +1329,13 @@ if(wordMenu.classList.contains("mobile-pinned")) return;
 
 let currentLeft = wordMenu.offsetLeft;
 let currentTop = wordMenu.offsetTop;
+let viewport = getViewportSize();
+let maxLeft = Math.max(0, viewport.width - wordMenu.offsetWidth);
+let maxTop = Math.max(0, viewport.height - wordMenu.offsetHeight);
+let boundedLeft = clamp(currentLeft, 0, maxLeft);
 let boundedTop = clamp(currentTop, 0, maxTop);
 
-wordMenu.style.left = currentLeft + "px";
+wordMenu.style.left = boundedLeft + "px";
 wordMenu.style.top = boundedTop + "px";
 wordMenu.style.right = "auto";
 wordMenu.style.bottom = "auto";
@@ -1512,11 +1536,11 @@ document.body.classList.remove("dragging");
 
 function saveProgress(){
 
-localStorage.setItem(
-progressStorageKey,
-JSON.stringify(Object.keys(answerClips)
-.filter(w => answerClips[w].classList.contains("visible")))
-);
+let foundWords = Array.from(document.querySelectorAll("#wordList li.found"))
+.map(item => (item.id || "").replace(/^menu-/, ""))
+.filter(Boolean);
+
+localStorage.setItem(progressStorageKey, JSON.stringify(foundWords));
 
 }
 
