@@ -150,11 +150,10 @@ cursor:grabbing;
 }
 /* LEFT SIDE */
 .title {
-  flex:1 1 auto;
-  min-width:0;
+  flex-shrink:inherit;
+
   white-space: nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+
   margin-right:calc(4px * var(--mobile-menu-ui-scale));
   margin-left:calc(8px * var(--mobile-menu-ui-scale));
   margin-top:calc(8px * var(--mobile-menu-ui-scale));
