@@ -4,6 +4,7 @@
 
 <title>vários nadas</title>
 <link rel="icon" type="image/png" href="/VN.png" sizes="32x32">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 
@@ -126,6 +127,53 @@ font-size:12px;
 margin-top:6px;
 opacity:0.8;
 color:#9ad69a;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 700px){
+  .header{
+    height:160px;
+  }
+
+  .title{
+    margin-top:-52px;
+    padding:0 14px;
+  }
+
+  .title h1{
+    font-size:36px;
+    margin:8px 0;
+  }
+
+  .subtitle{
+    font-size:16px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+    gap:18px;
+    padding:20px 14px 28px;
+  }
+
+  .card{
+    padding:14px 10px;
+  }
+
+  .thumb{
+    width:min(78vw, 300px);
+    height:min(78vw, 300px);
+    margin-bottom:14px;
+  }
+
+  .tags{
+    font-size:15px;
+    line-height:1.35;
+  }
+
+  .status{
+    font-size:16px;
+    margin-top:10px;
+  }
 }
 </style>
 
