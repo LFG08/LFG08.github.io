@@ -153,6 +153,7 @@ cursor:grabbing;
 
 .title {
   flex-shrink:inherit;
+  white-space: nowrap;
   margin-right:calc(4px * var(--mobile-menu-ui-scale));
   margin-left:calc(8px * var(--mobile-menu-ui-scale));
   margin-top:calc(8px * var(--mobile-menu-ui-scale));
@@ -344,11 +345,11 @@ font-size:calc(0.8rem * var(--mobile-menu-ui-scale));
 width:100%;
 }
 
-@media (max-width: 900px) and (hover: none) and (pointer: coarse){
+@media (max-width: 900px){
   :root{
     --mandala-display-size:min(2048px, 100vw);
   }
-
+  
   #wordMenu{
     top:auto;
     bottom:8px;
@@ -738,6 +739,10 @@ if(pinSelect){
 }
 applyMenuBounds();
 });
+
+
+
+  
 
 /* desktop intentionally uses browser-native zoom behavior (same as other mandalas) */
 
@@ -1274,7 +1279,7 @@ clearAll();
 }
 
 function isMobileViewport(){
-return window.matchMedia("(max-width: 900px) and (hover: none) and (pointer: coarse)").matches;
+return window.matchMedia("(max-width: 900px)").matches;
 }
 
 function clamp(value, min, max){
@@ -1302,13 +1307,11 @@ let menuRect = wordMenu.getBoundingClientRect();
 let viewport = getViewportSize();
 let currentLeft = wordMenu.offsetLeft;
 let currentTop = wordMenu.offsetTop;
-let maxLeft = Math.max(0, viewport.width - menuRect.width);
 let maxTop = Math.max(0, viewport.height - menuRect.height);
 
-let boundedLeft = clamp(currentLeft, 0, maxLeft);
 let boundedTop = clamp(currentTop, 0, maxTop);
 
-wordMenu.style.left = boundedLeft + "px";
+wordMenu.style.left = currentLeft + "px";
 wordMenu.style.top = boundedTop + "px";
 wordMenu.style.right = "auto";
 wordMenu.style.bottom = "auto";
@@ -1428,9 +1431,8 @@ if(!dragging) return;
 if(dragPointerId !== null && e.pointerId !== dragPointerId) return;
 let menuRect = menu.getBoundingClientRect();
 let viewport = getViewportSize();
-let maxLeft = Math.max(0, viewport.width - menuRect.width);
 let maxTop = Math.max(0, viewport.height - menuRect.height);
-let nextLeft = clamp(e.clientX - offsetX, 0, maxLeft);
+let nextLeft = e.clientX - offsetX;
 let nextTop = clamp(e.clientY - offsetY, 0, maxTop);
 
 menu.style.left=nextLeft+"px";
