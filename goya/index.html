@@ -706,8 +706,12 @@ loadHints();
 updateCounter();
 initMobileMenuOptions();
 
-setMandalaZoom(1, { persist: false });
-localStorage.removeItem(mandalaZoomStorageKey);
+if(!isMobileViewport()){
+  setMandalaZoom(1, { persist: false });
+  localStorage.removeItem(mandalaZoomStorageKey);
+}else{
+  setMandalaZoom(1, { persist: false });
+}
 
 /* restore overlay OR set default */
 let savedOverlay = localStorage.getItem(overlayStorageKey);
