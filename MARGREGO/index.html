@@ -282,6 +282,10 @@ text-decoration:none;
 opacity:1;
 }
 
+.hidden-word.found.hint-revealed{
+text-decoration:line-through;
+}
+
 .collapsed #wordList{
 display:none;
 }
@@ -995,6 +999,7 @@ if(!isVisible){
 
   answerClips[word].classList.add("visible");
   menuWord.classList.add("found");
+  menuWord.classList.remove("hint-revealed");
 
   if(menuWord.classList.contains("hidden-word")){
   finishGuessEdit(menuWord, false);
