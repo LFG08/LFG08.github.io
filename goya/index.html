@@ -13,27 +13,31 @@
 
 :root{
 --mandala-display-size:min(2048px, 100vw);
+--mandala-zoom:1;
+--mandala-render-size:calc(var(--mandala-display-size) * var(--mandala-zoom));
 --mobile-menu-scale:0.25;
 --mobile-menu-ui-scale:1;
+--mobile-menu-base-width:250px;
 }
 
 /* ================= MANDALA ================= */
 
 .container{
 position:relative;
-width:var(--mandala-display-size);
-height:var(--mandala-display-size);
+width:var(--mandala-render-size);
+height:var(--mandala-render-size);
 contain:layout paint;
 transition:transform 0.25s ease;
 margin-bottom:20px;
+transform-origin:top left;
 }
 
 .container img{
 position:absolute;
 top:0;
 left:0;
-width:var(--mandala-display-size);
-height:var(--mandala-display-size);
+width:var(--mandala-render-size);
+height:var(--mandala-render-size);
 }
 
 /* ================= ANSWER OVERLAY ================= */
@@ -42,8 +46,8 @@ height:var(--mandala-display-size);
 position:absolute;
 top:0;
 left:0;
-width:var(--mandala-display-size);
-height:var(--mandala-display-size);
+width:var(--mandala-render-size);
+height:var(--mandala-render-size);
 pointer-events:none;
 }
 
@@ -51,8 +55,8 @@ pointer-events:none;
 position:absolute;
 top:0;
 left:0;
-width:var(--mandala-display-size);
-height:var(--mandala-display-size);
+width:var(--mandala-render-size);
+height:var(--mandala-render-size);
 pointer-events:none;
 z-index:3;
 }
@@ -81,11 +85,11 @@ animation:hintPulse 0.9s ease-in-out 2;
 position:absolute;
 top:0;
 left:0;
-width:var(--mandala-display-size);
-height:var(--mandala-display-size);
+width:var(--mandala-render-size);
+height:var(--mandala-render-size);
 
 background-image:url("mandala_gabarito_1.png");
-background-size:var(--mandala-display-size) var(--mandala-display-size);
+background-size:var(--mandala-render-size) var(--mandala-render-size);
 
 opacity:0;
 transition:opacity 0.12s linear;
@@ -353,7 +357,7 @@ width:100%;
     bottom:8px;
     left:8px;
     right:auto;
-    width:calc(var(--mandala-display-size) * var(--mobile-menu-scale));
+    width:calc(var(--mobile-menu-base-width) * (var(--mobile-menu-scale) / 0.25));
     max-height:40vh;
     font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
   }
@@ -596,7 +600,11 @@ const hintStorageKey = "GOYA_wordHints";
 const progressStorageKey = "goyaPuzzleProgress";
 const mobileMenuSizeKey = "GOYA_mobileMenuSize";
 const mobileMenuPinKey = "GOYA_mobileMenuPin";
+const mandalaZoomStorageKey = "GOYA_desktopMandalaZoom";
 const defaultOverlay = "mandala_gabarito_1.png";
+const minMandalaZoom = 1;
+const maxMandalaZoom = 3;
+const mandalaZoomStep = 0.1;
 
 const hintRegionMapCoords = [
 { id: 1, coords: [1, 2, 2046, 692] },
@@ -606,6 +614,27 @@ const hintRegionMapCoords = [
 
 const baseMandalaSize = 2048;
 let regionDefinitions = [];
+let mandalaZoom = 1;
+
+function applyContainerTransform(){
+let container = document.querySelector(".container");
+if(!container) return;
+container.style.transform = "rotate(" + rotation + "deg)";
+}
+
+function setMandalaZoom(nextZoom, { persist = true } = {}){
+mandalaZoom = clamp(nextZoom, minMandalaZoom, maxMandalaZoom);
+document.documentElement.style.setProperty("--mandala-zoom", mandalaZoom.toFixed(2));
+layoutHintRegions();
+
+if(typeof imageMapResize === "function"){
+  imageMapResize();
+}
+
+if(persist){
+  localStorage.setItem(mandalaZoomStorageKey, mandalaZoom.toFixed(2));
+}
+}
 
 function getHintScale(){
 let container = document.querySelector(".container");
@@ -674,6 +703,17 @@ loadHints();
 updateCounter();
 initMobileMenuOptions();
 
+if(!isMobileViewport()){
+  let savedZoom = Number(localStorage.getItem(mandalaZoomStorageKey));
+  if(Number.isFinite(savedZoom)){
+    setMandalaZoom(savedZoom, { persist: false });
+  }else{
+    setMandalaZoom(1, { persist: false });
+  }
+}else{
+  setMandalaZoom(1, { persist: false });
+}
+
 /* restore overlay OR set default */
 let savedOverlay = localStorage.getItem(overlayStorageKey);
 let validOverlays = Array.from(overlaySelector.options).map(option => option.value);
@@ -690,12 +730,20 @@ if(savedOverlay && validOverlays.includes(savedOverlay)){
 overlaySelector.dispatchEvent(new Event("change"));
 layoutHintRegions();
 applyMenuBounds();
+applyContainerTransform();
 
 /* load answers AFTER overlay is ready */
 loadProgress();
 });
 
 window.addEventListener("resize", () => {
+if(isMobileViewport()){
+  if(mandalaZoom !== 1){
+    setMandalaZoom(1, { persist: false });
+  }
+}else{
+  setMandalaZoom(mandalaZoom, { persist: false });
+}
 layoutHintRegions();
 let sizeInput = document.getElementById("mobileMenuSize");
 if(sizeInput){
@@ -707,6 +755,17 @@ if(pinSelect){
 }
 applyMenuBounds();
 });
+
+document.addEventListener("wheel", e => {
+if(isMobileViewport()) return;
+if(!e.ctrlKey) return;
+if(e.target.closest("#wordMenu")) return;
+
+e.preventDefault();
+
+let direction = e.deltaY < 0 ? 1 : -1;
+setMandalaZoom(mandalaZoom + (direction * mandalaZoomStep));
+}, { passive: false });
 
 
 /* ===== toggle mode ===== */
@@ -1437,8 +1496,7 @@ rotateMandala.onclick=function(){
 
 rotation=(rotation+90)%360;
 
-document.querySelector(".container")
-.style.transform="rotate("+rotation+"deg)";
+applyContainerTransform();
 
 this.textContent="Rotate ("+rotation+"°)";
 
