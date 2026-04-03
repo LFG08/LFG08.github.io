@@ -586,6 +586,8 @@ const areaRegionMap = {};
 let currentOverlay = defaultOverlay;
 let allowToggleOff = true;
 let rotation = 0;
+let completionShown = false;
+let isBootstrapping = true;
 
 const menuItems = {};
 const answerClips = {};
@@ -600,10 +602,15 @@ function updateCounter(){
 
   document.getElementById("counter").textContent = found + " / " + total;
 
-  if(found === total && total > 0){
+  if(isBootstrapping) return;
+
+  if(found === total && total > 0 && !completionShown){
+    completionShown = true;
     setTimeout(function(){
       alert("fim! 🎉🎉");
     }, 200);
+  }else if(found < total){
+    completionShown = false;
   }
 }
 
@@ -929,6 +936,7 @@ window.addEventListener("load", function(){
   loadHints();
   loadProgress();
   applyMenuBounds();
+  isBootstrapping = false;
   updateCounter();
 });
 
