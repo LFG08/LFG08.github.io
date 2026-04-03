@@ -1318,9 +1318,7 @@ function applyMobileMenuPin(pinMode){
 wordMenu.classList.remove("pinned-bottom-collapsed", "pinned-top-left", "pinned-top-right", "mobile-pinned");
 
 if(!isMobileViewport() || pinMode === "free"){
-  if(pinMode === "free"){
-    wordMenu.classList.remove("collapsed");
-  }
+  /* keep current collapsed/expanded state when menu is free (desktop/browser zoom triggers resize) */
   localStorage.setItem(mobileMenuPinKey, "free");
   return;
 }
