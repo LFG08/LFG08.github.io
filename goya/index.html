@@ -357,7 +357,7 @@ width:100%;
     bottom:8px;
     left:8px;
     right:auto;
-    width:calc(var(--mobile-menu-base-width) * (var(--mobile-menu-scale) / 0.25));
+    width:calc(var(--mandala-render-size) * var(--mobile-menu-scale));
     max-height:40vh;
     font-size:calc(0.78rem * var(--mobile-menu-ui-scale));
   }
@@ -601,6 +601,7 @@ const progressStorageKey = "goyaPuzzleProgress";
 const mobileMenuSizeKey = "GOYA_mobileMenuSize";
 const mobileMenuPinKey = "GOYA_mobileMenuPin";
 const mandalaZoomStorageKey = "GOYA_desktopMandalaZoom";
+const mobileDefaultMandalaZoom = 1.5;
 const defaultOverlay = "mandala_gabarito_1.png";
 const minMandalaZoom = 1;
 const maxMandalaZoom = 3;
@@ -714,7 +715,7 @@ if(!isMobileViewport()){
     setMandalaZoom(1, { persist: false });
   }
 }else{
-  setMandalaZoom(1, { persist: false });
+  setMandalaZoom(mobileDefaultMandalaZoom, { persist: false });
 }
 
 /* restore overlay OR set default */
@@ -741,8 +742,8 @@ loadProgress();
 
 window.addEventListener("resize", () => {
 if(isMobileViewport()){
-  if(mandalaZoom !== 1){
-    setMandalaZoom(1, { persist: false });
+  if(mandalaZoom !== mobileDefaultMandalaZoom){
+    setMandalaZoom(mobileDefaultMandalaZoom, { persist: false });
   }
 }else{
   setMandalaZoom(mandalaZoom, { persist: false });
@@ -1372,7 +1373,7 @@ requestAnimationFrame(autoFitMobileMenuContent);
 }
 
 function getBaseMobileUiScale(scale){
-return clamp(scale / 0.25, 0.45, 1.9);
+return clamp((scale / 0.25) * 0.62, 0.36, 1.2);
 }
 
 function autoFitMobileMenuContent(){
