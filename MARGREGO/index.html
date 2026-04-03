@@ -788,18 +788,43 @@ activeRegionHintTimeout = setTimeout(() => {
 }, 2200);
 }
 
+function centerViewOnRegion(region){
+
+if(!region) return;
+
+let container = document.querySelector(".container");
+if(!container) return;
+
+let containerRect = container.getBoundingClientRect();
+let regionCenterX = (region.minX + region.maxX) / 2;
+let regionCenterY = (region.minY + region.maxY) / 2;
+
+let targetX = window.scrollX + containerRect.left + regionCenterX - (window.innerWidth / 2);
+let targetY = window.scrollY + containerRect.top + regionCenterY - (window.innerHeight / 2);
+
+let maxX = Math.max(0, document.documentElement.scrollWidth - window.innerWidth);
+let maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
+window.scrollTo({
+left: Math.min(Math.max(targetX, 0), maxX),
+top: Math.min(Math.max(targetY, 0), maxY),
+behavior: "smooth"
+});
+}
+
 function applyHint(item, hintLevel){
 
 let nextLevel = Math.max(Number(item.dataset.hintLevel || 0), hintLevel);
 item.dataset.hintLevel = String(Math.min(nextLevel, 2));
+let area = findAreaByWord(item.dataset.hidden);
+let region = area ? getRegionForArea(area) : null;
 
-if(hintLevel === 1){
-  let area = findAreaByWord(item.dataset.hidden);
-  let region = area ? getRegionForArea(area) : null;
+if(hintLevel >= 1 && region){
+  flashRegionHint(region.id);
+}
 
-  if(region){
-    flashRegionHint(region.id);
-  }
+if(hintLevel >= 2 && region){
+  centerViewOnRegion(region);
 }
 
 renderMenuWord(item);
