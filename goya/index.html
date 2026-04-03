@@ -514,11 +514,22 @@ const hintStorageKey = "GOYA_wordHints";
 const progressStorageKey = "goyaPuzzleProgress";
 const defaultOverlay = "mandala_gabarito_1.png";
 
-const regionDefinitions = [
-{ id: 1, minX: 1, maxX: 2046, minY: 3, maxY: 689 },
-{ id: 2, minX: 3, maxX: 2046, minY: 1359, maxY: 2046 },
-{ id: 3, minX: 1, maxX: 2046, minY: 693, maxY: 1355 }
+const hintRegionMapCoords = [
+{ id: 1, coords: [1, 3, 2046, 689] },
+{ id: 2, coords: [3, 2046, 2046, 1359] },
+{ id: 3, coords: [1, 693, 2046, 1355] }
 ];
+
+const regionDefinitions = hintRegionMapCoords.map(region => {
+let [x1, y1, x2, y2] = region.coords;
+return {
+  id: region.id,
+  minX: Math.min(x1, x2),
+  maxX: Math.max(x1, x2),
+  minY: Math.min(y1, y2),
+  maxY: Math.max(y1, y2)
+};
+});
 
 /* load */
 window.addEventListener("load", function(){
@@ -737,15 +748,24 @@ if(!bounds) return null;
 let centerX = (bounds.minX + bounds.maxX) / 2;
 let centerY = (bounds.minY + bounds.maxY) / 2;
 
-return regionDefinitions.find(region =>
+let centerMatch = regionDefinitions.find(region =>
 centerX >= region.minX &&
 centerX <= region.maxX &&
 centerY >= region.minY &&
 centerY <= region.maxY
-) || regionDefinitions.find(region =>
-bounds.maxY >= region.minY &&
-bounds.minY <= region.maxY
-) || null;
+);
+
+if(centerMatch) return centerMatch;
+
+let overlapRanked = regionDefinitions
+.map(region => {
+  let overlapY = Math.min(bounds.maxY, region.maxY) - Math.max(bounds.minY, region.minY);
+  return { region, overlapY };
+})
+.filter(item => item.overlapY >= 0)
+.sort((a, b) => b.overlapY - a.overlapY);
+
+return overlapRanked.length ? overlapRanked[0].region : null;
 }
 
 let activeRegionHintTimeout = null;
