@@ -11,12 +11,12 @@
 
 :root{
 --mandala-display-size:2048px;
---mandala-render-size:var(--mandala-display-size);
---mobile-menu-scale:0.25;
+--mandala-zoom:1;
+--mandala-render-size:calc(var(--mandala-display-size) * var(--mandala-zoom));
+--mobile-menu-scale:0.20;
 --mobile-menu-ui-scale:1;
 --mobile-menu-base-width:250px;
 }
-
 
 /* ================= MANDALA ================= */
 
