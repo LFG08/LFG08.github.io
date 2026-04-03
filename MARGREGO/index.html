@@ -116,7 +116,7 @@ cursor:grabbing;
   position:absolute;
   top:120px;
   left:30px;   /* ← anchor it here */
-  width: 250px;;
+  width:calc(250px * var(--mobile-menu-ui-scale));
 
   max-height:70vh;
 
@@ -125,11 +125,13 @@ cursor:grabbing;
   color:white;
 
   font-family:Times New Roman, Times, serif;
-  font-size:0.9rem;
+  font-size:calc(0.9rem * var(--mobile-menu-ui-scale));
+
 
   display:flex;
   flex-direction:column;
   z-index:20;
+  box-sizing:border-box;
 }
 
 #wordMenu.mobile-pinned{
@@ -149,19 +151,20 @@ cursor:grabbing;
 /* LEFT SIDE */
 .title {
   flex-shrink:inherit;
-  margin-right: 4px;
-  margin-left: 8px;
-  margin-top: 8px;
-}
 
+  white-space: nowrap;
+
+  margin-right:calc(4px * var(--mobile-menu-ui-scale));
+  margin-left:calc(8px * var(--mobile-menu-ui-scale));
+  margin-top:calc(8px * var(--mobile-menu-ui-scale));
+}
 /* RIGHT SIDE GROUP */
 .right{
   display:flex;
   align-items:center;
-  gap:6px;
-  flex-shrink:0; /* prevents collapsing weirdness */
-  margin-right: 8px;
-  margin-top: 6px;
+  gap:calc(6px * var(--mobile-menu-ui-scale));
+  flex-shrink:0;
+  margin-right:calc(8px * var(--mobile-menu-ui-scale));
 }
 
 /* COUNTER */
@@ -188,21 +191,20 @@ cursor:grabbing;
 .info-btn,
 .menu-btn,
 #toggleMenu{
-
-  display: flex;              /* KEY */
-  align-items: center;        /* vertical center */
-  justify-content: center;    /* horizontal center */
-
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: none;
-  font-size: 11px;
-  cursor: pointer;
-  background: #ccc;
-  line-height: 16px;
-  padding: 0;
-  margin-right: 4px;
+  
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:calc(16px * var(--mobile-menu-ui-scale));
+  height:calc(16px * var(--mobile-menu-ui-scale));
+  border-radius:50%;
+  border:none;
+  font-size:calc(11px * var(--mobile-menu-ui-scale));
+  cursor:pointer;
+  background:#ccc;
+  line-height:calc(16px * var(--mobile-menu-ui-scale));
+  padding:0;
+  margin-right:calc(4px * var(--mobile-menu-ui-scale));
 }
 
 .tooltip {
