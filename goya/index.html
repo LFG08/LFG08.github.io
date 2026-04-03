@@ -706,16 +706,8 @@ loadHints();
 updateCounter();
 initMobileMenuOptions();
 
-if(!isMobileViewport()){
-  let savedZoom = Number(localStorage.getItem(mandalaZoomStorageKey));
-  if(Number.isFinite(savedZoom)){
-    setMandalaZoom(savedZoom, { persist: false });
-  }else{
-    setMandalaZoom(1, { persist: false });
-  }
-}else{
-  setMandalaZoom(1, { persist: false });
-}
+setMandalaZoom(1, { persist: false });
+localStorage.removeItem(mandalaZoomStorageKey);
 
 /* restore overlay OR set default */
 let savedOverlay = localStorage.getItem(overlayStorageKey);
