@@ -174,9 +174,9 @@ cursor:grabbing;
 
 .info-wrapper {
   position: relative;
-  display: inline-block;
-  align-items:center;
-  justify-content:center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .info-wrapper::after {
@@ -207,6 +207,9 @@ cursor:grabbing;
   padding:0;
   margin-right:calc(4px * var(--mobile-menu-ui-scale));
 }
+  .menu-btn{
+  font-size:calc(8px * var(--mobile-menu-ui-scale));
+  }
 
 .tooltip {
   position: absolute;
@@ -389,6 +392,8 @@ font-family:inherit;
   #counter{
     font-size:calc(0.5rem * var(--mobile-menu-ui-scale));
     white-space:nowrap;
+    align-items:center;
+    justify-content:center;
   }
 
   .info-btn,
