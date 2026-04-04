@@ -157,6 +157,8 @@ cursor:grabbing;
   margin-right:calc(4px * var(--mobile-menu-ui-scale));
   margin-left:calc(8px * var(--mobile-menu-ui-scale));
   margin-top:calc(8px * var(--mobile-menu-ui-scale));
+  margin-bottom:calc(8px * var(--mobile-menu-ui-scale));
+  
   display:flex;
   align-items:center;
   gap:calc(6px * var(--mobile-menu-ui-scale));
@@ -173,6 +175,8 @@ cursor:grabbing;
 .info-wrapper {
   position: relative;
   display: inline-block;
+  align-items:center;
+  justify-content:center;
 }
 
 .info-wrapper::after {
@@ -191,14 +195,15 @@ cursor:grabbing;
   display:flex;
   align-items:center;
   justify-content:center;
-  width:calc(16px * var(--mobile-menu-ui-scale));
-  height:calc(16px * var(--mobile-menu-ui-scale));
+  
+  width:calc(14px * var(--mobile-menu-ui-scale));
+  height:calc(14px * var(--mobile-menu-ui-scale));
   border-radius:50%;
   border:none;
   font-size:calc(11px * var(--mobile-menu-ui-scale));
   cursor:pointer;
   background:#ccc;
-  line-height:calc(16px * var(--mobile-menu-ui-scale));
+  line-height:calc(14px * var(--mobile-menu-ui-scale));
   padding:0;
   margin-right:calc(4px * var(--mobile-menu-ui-scale));
 }
@@ -392,7 +397,7 @@ font-family:inherit;
     width:10px;
     height:10px;
     min-width:10px;
-    font-size:calc(0.5rem * var(--mobile-menu-ui-scale));
+    font-size:calc(0.3rem * var(--mobile-menu-ui-scale));
 
     display:flex;
     align-items:center;
