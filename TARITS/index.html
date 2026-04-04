@@ -972,17 +972,17 @@ let header=menuHeader;
 
 let offsetX,offsetY,dragging=false;
 
-header.onmousedown=e=>{
+function startMenuDrag(clientX, clientY){
 if(isMobileViewport() && wordMenu.classList.contains("mobile-pinned")) return;
 dragging=true;
-offsetX=e.clientX-menu.offsetLeft;
-offsetY=e.clientY-menu.offsetTop;
-};
+offsetX=clientX-menu.offsetLeft;
+offsetY=clientY-menu.offsetTop;
+}
 
-document.onmousemove=e=>{
+function moveMenuDrag(clientX, clientY){
 if(!dragging) return;
-let targetLeft = e.clientX - offsetX;
-let targetTop = e.clientY - offsetY;
+let targetLeft = clientX - offsetX;
+let targetTop = clientY - offsetY;
 if(isMobileViewport()){
   let clamped = clampMenuToMandala(targetLeft, targetTop);
   menu.style.left = clamped.left + "px";
@@ -991,9 +991,35 @@ if(isMobileViewport()){
 }
 menu.style.left=targetLeft+"px";
 menu.style.top=targetTop+"px";
+}
+
+header.onmousedown=e=>{
+startMenuDrag(e.clientX, e.clientY);
 };
 
+header.addEventListener("touchstart", e => {
+if(e.touches.length !== 1) return;
+let touch = e.touches[0];
+startMenuDrag(touch.clientX, touch.clientY);
+if(dragging){
+  e.preventDefault();
+}
+}, { passive: false });
+
+document.onmousemove=e=>{
+moveMenuDrag(e.clientX, e.clientY);
+};
+
+document.addEventListener("touchmove", e => {
+if(!dragging || !e.touches.length) return;
+let touch = e.touches[0];
+moveMenuDrag(touch.clientX, touch.clientY);
+e.preventDefault();
+}, { passive: false });
+
 document.onmouseup=()=>dragging=false;
+document.addEventListener("touchend", ()=>dragging=false);
+document.addEventListener("touchcancel", ()=>dragging=false);
 
 /* ===== collapse menu ===== */
 
