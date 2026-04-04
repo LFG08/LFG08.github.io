@@ -200,6 +200,10 @@ cursor:grabbing;
   justify-content:center;
 }
 
+.info-wrapper .info-btn{
+  touch-action:manipulation;
+}
+
 .tooltip{
   position:absolute;
   top:calc(100% + 6px);
@@ -1350,9 +1354,13 @@ offsetX = clientX - menu.offsetLeft;
 offsetY = clientY - menu.offsetTop;
 }
 
-header.addEventListener("mousedown", e => startMenuDrag(e.clientX, e.clientY));
+header.addEventListener("mousedown", e => {
+if(e.target.closest("button, a, .info-wrapper")) return;
+startMenuDrag(e.clientX, e.clientY);
+});
 header.addEventListener("touchstart", e => {
 if(!e.touches[0]) return;
+if(e.target.closest("button, a, .info-wrapper")) return;
 startMenuDrag(e.touches[0].clientX, e.touches[0].clientY);
 }, { passive: true });
 
@@ -1372,6 +1380,45 @@ applyMenuBounds();
 
 document.addEventListener("mouseup", () => dragging = false);
 document.addEventListener("touchend", () => dragging = false);
+
+/* ===== mobile tooltip toggle ===== */
+
+const infoWrappers = Array.from(document.querySelectorAll(".info-wrapper"));
+
+function closeInfoTooltips(exceptWrapper = null){
+infoWrappers.forEach(wrapper => {
+if(wrapper !== exceptWrapper){
+wrapper.classList.remove("active");
+}
+});
+}
+
+infoWrappers.forEach(wrapper => {
+const btn = wrapper.querySelector(".info-btn");
+if(!btn) return;
+
+btn.addEventListener("click", e => {
+e.stopPropagation();
+
+const willOpen = !wrapper.classList.contains("active");
+closeInfoTooltips();
+
+if(willOpen){
+wrapper.classList.add("active");
+}
+});
+});
+
+document.addEventListener("click", e => {
+if(e.target.closest(".info-wrapper")) return;
+closeInfoTooltips();
+});
+
+document.addEventListener("keydown", e => {
+if(e.key === "Escape"){
+closeInfoTooltips();
+}
+});
 
 /* ===== collapse menu ===== */
 
