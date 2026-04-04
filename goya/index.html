@@ -172,20 +172,6 @@ cursor:grabbing;
 
 /* ================= INFO ================= */
 
-.info-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.info-wrapper::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  height: 6px; /* invisible bridge */
-}
-
 .info-btn,
 .menu-btn,
 #toggleMenu{
@@ -209,35 +195,64 @@ cursor:grabbing;
   font-size:calc(8px * var(--mobile-menu-ui-scale));
   }
 
-.tooltip {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 180px;
-  margin-top: 4px; /* small, safe gap */
 
-  background: rgba(0,0,0,0.85);
-  color: white;
-  font-size: 12px;
-  padding: 8px;
-  border-radius: 6px;
-
-  opacity: 0;
-  pointer-events: none;
-  transition: 0.2s;
+.info-wrapper{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
 }
 
-.tooltip.help-tooltip {
-  width: 320px;
-  line-height: 1.35;
+.tooltip{
+  position:absolute;
+  top:calc(100% + 6px);
+  left:0;
+
+  min-width:180px;
+  max-width:min(320px, 80vw);
+
+  padding:8px 10px;
+  border-radius:6px;
+
+  background:rgba(0,0,0,0.92);
+  color:white;
+  font-size:12px;
+  line-height:1.35;
+
+  white-space:normal;
+  overflow-wrap:break-word;
+  word-break:break-word;
+
+  box-sizing:border-box;
+  z-index:9999;
+
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .18s ease, visibility .18s ease;
 }
 
-/* show tooltip when hovering button OR tooltip itself */
-.info-wrapper:hover .tooltip {
-  opacity: 1;
-  pointer-events: auto;
-  }
+.tooltip.help-tooltip{
+  width:max-content;
+  max-width:min(320px, 80vw);
+}
 
+/* desktop */
+.info-wrapper:hover .tooltip,
+.info-wrapper:focus-within .tooltip{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+
+/* mobile/touch */
+.info-wrapper.active .tooltip{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+
+  
 .tooltip a,
 .highlight {
   text-decoration: none;
