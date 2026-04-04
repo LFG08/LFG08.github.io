@@ -359,25 +359,7 @@ font-family:inherit;
   }
 
   #wordMenu.pinned-bottom-collapsed{
-    left:8px !important;
-    right:auto !important;
-    bottom:auto !important;
-    top:2056px !important;
     max-height:none;
-  }
-
-  #wordMenu.pinned-top-left{
-    top:8px !important;
-    left:8px !important;
-    right:auto !important;
-    bottom:auto !important;
-  }
-
-  #wordMenu.pinned-top-right{
-    top:8px !important;
-    left:1850px !important;
-    right:auto !important;
-    bottom:auto !important;
   }
 
   #mobileMenuOptions{
@@ -932,6 +914,55 @@ if(pinMode === "bottom-collapsed"){
 if(persist){
   localStorage.setItem(mobileMenuPinKey, pinMode);
 }
+
+positionPinnedMenu();
+}
+
+function getMandalaBoundsInViewport(){
+let container = document.querySelector(".container");
+if(!container) return null;
+let rect = container.getBoundingClientRect();
+return {
+  left: rect.left,
+  top: rect.top,
+  right: rect.right,
+  bottom: rect.bottom
+};
+}
+
+function clampMenuToMandala(targetLeft, targetTop){
+let bounds = getMandalaBoundsInViewport();
+if(!bounds) return { left: targetLeft, top: targetTop };
+
+let maxLeft = Math.max(bounds.left, bounds.right - menu.offsetWidth);
+let maxTop = Math.max(bounds.top, bounds.bottom - menu.offsetHeight);
+
+return {
+  left: clamp(targetLeft, bounds.left, maxLeft),
+  top: clamp(targetTop, bounds.top, maxTop)
+};
+}
+
+function positionPinnedMenu(){
+if(!menu.classList.contains("mobile-pinned")) return;
+let bounds = getMandalaBoundsInViewport();
+if(!bounds) return;
+
+let gutter = 8;
+let targetLeft = bounds.left + gutter;
+let targetTop = bounds.top + gutter;
+
+if(menu.classList.contains("pinned-top-right")){
+  targetLeft = bounds.right - menu.offsetWidth - gutter;
+  targetTop = bounds.top + gutter;
+}else if(menu.classList.contains("pinned-bottom-collapsed")){
+  targetLeft = bounds.left + gutter;
+  targetTop = bounds.bottom - menu.offsetHeight - gutter;
+}
+
+let clamped = clampMenuToMandala(targetLeft, targetTop);
+menu.style.left = clamped.left + "px";
+menu.style.top = clamped.top + "px";
 }
 
 /* ===== menu drag ===== */
@@ -950,8 +981,16 @@ offsetY=e.clientY-menu.offsetTop;
 
 document.onmousemove=e=>{
 if(!dragging) return;
-menu.style.left=(e.clientX-offsetX)+"px";
-menu.style.top=(e.clientY-offsetY)+"px";
+let targetLeft = e.clientX - offsetX;
+let targetTop = e.clientY - offsetY;
+if(isMobileViewport()){
+  let clamped = clampMenuToMandala(targetLeft, targetTop);
+  menu.style.left = clamped.left + "px";
+  menu.style.top = clamped.top + "px";
+  return;
+}
+menu.style.left=targetLeft+"px";
+menu.style.top=targetTop+"px";
 };
 
 document.onmouseup=()=>dragging=false;
@@ -1039,8 +1078,14 @@ pinSelect.addEventListener("change", () => {
 });
 
 window.addEventListener("resize", () => {
-  applyMenuPinMode(pinSelect.value, false);
+  if(isMobileViewport()){
+    applyMenuPinMode(pinSelect.value, false);
+    return;
+  }
+  applyMenuPinMode("free", false);
 });
+
+window.addEventListener("scroll", positionPinnedMenu);
 });
 
 </script>
