@@ -5,7 +5,7 @@
 
 <title>UnrealUnearth</title>
 <link rel="icon" type="image/png" href="/VN.png" sizes="32x32">
-  
+
 <style>
 
 /* ================= MANDALA ================= */
@@ -57,23 +57,24 @@ opacity:1;
 
 .hint-region{
 position:absolute;
-pointer-events:none;
-border:2px solid rgba(255,255,255,0.9);
-background:rgba(255,255,255,0.14);
+border:6px solid rgba(255, 230, 120, 0);
+box-shadow:0 0 0 rgba(255, 230, 120, 0);
 opacity:0;
-transition:opacity 0.2s ease;
+pointer-events:none;
+transition:opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 z-index:4;
 }
 
 .hint-region.active{
 opacity:1;
+border-color:rgba(255, 230, 120, 0.95);
+box-shadow:0 0 26px rgba(255, 230, 120, 0.95), inset 0 0 18px rgba(255, 230, 120, 0.45);
 animation:hintPulse 0.9s ease-in-out 2;
 }
 
 @keyframes hintPulse{
-0%{opacity:0;}
-50%{opacity:1;}
-100%{opacity:0;}
+0%,100%{transform:scale(1);}
+50%{transform:scale(0.996);}
 }
 
 /* ================= BACKGROUND ================= */
@@ -166,11 +167,11 @@ box-sizing:border-box;
 
 .info-btn,
 .menu-btn{
-  
+
   display: flex;              /* KEY */
   align-items: center;        /* vertical center */
   justify-content: center;    /* horizontal center */
-  
+
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -205,7 +206,7 @@ box-sizing:border-box;
 .info-wrapper:hover .tooltip {
   opacity: 1;
   pointer-events: auto;
-  
+
 }
 
 .tooltip a {
@@ -219,8 +220,8 @@ box-sizing:border-box;
 .highlight {
   color: #c44b05;
   text-decoration: none;
-}  
-  
+}
+
 #wordList{
 flex:1;
 overflow-y:auto;
@@ -285,7 +286,7 @@ box-sizing:border-box;
     <button class="info-btn">i</button>
     <span class="tooltip">
       Mandala inspirada na música <a href= "https://open.spotify.com/intl-pt/track/25m161aHgT9ORt97vTvhlR?si=020703b81b464235" class= highlight>"First Time"</a> do Hozier.
-      Caça-Palavras contém nomes das músicas do álbum 
+      Caça-Palavras contém nomes das músicas do álbum
       <a class= highlight href="https://open.spotify.com/intl-pt/album/4goifiXK2L1XEEMeUwmbxG?si=u0dbf8cUQAWlvRrZcZgYuA">Unreal Unearth Unending</a>.
     </span>
   </span>
@@ -358,95 +359,95 @@ box-sizing:border-box;
 
 <map name="image-map">
 
-<area coords="1329,781,1351,767,1383,821,1365,828" 
+<area coords="1329,781,1351,767,1383,821,1365,828"
 shape="poly"
 onclick="toggleAnswer(this,'Hozier');return false;">
 
-<area coords="318,657,330,678,349,697,367,682,381,655,399,626,414,604,392,599,359,595,358,635" 
+<area coords="318,657,330,678,349,697,367,682,381,655,399,626,414,604,392,599,359,595,358,635"
 shape="poly"
 onclick="toggleAnswer(this,'UnrealUnearthUnending');return false;">
 
-<area coords="2038,666,2027,683,2022,710,2027,732,2046,728,2046,695,2046,647" 
+<area coords="2038,666,2027,683,2022,710,2027,732,2046,728,2046,695,2046,647"
 shape="poly"
 onclick="toggleAnswer(this,'DeSelbyI');return false;">
 
-<area coords="662,2037,678,2029,703,2022,721,2020,730,2035,723,2046,671,2047" 
+<area coords="662,2037,678,2029,703,2022,721,2020,730,2035,723,2046,671,2047"
 shape="poly"
 onclick="toggleAnswer(this,'DeSelbyII');return false;">
 
-<area coords="946,1563,949,1548,920,1550,897,1563,886,1595,886,1624,904,1646,928,1658,949,1660,964,1646,969,1624,956,1611,935,1629,918,1620,915,1595,928,1584,938,1584" 
+<area coords="946,1563,949,1548,920,1550,897,1563,886,1595,886,1624,904,1646,928,1658,949,1660,964,1646,969,1624,956,1611,935,1629,918,1620,915,1595,928,1584,938,1584"
 shape="poly"
 onclick="toggleAnswer(this,'FirstTime');return false;">
 
-<area coords="-1,1836,27,1851,41,1829,37,1804,28,1773,-1,1733,-1,1731" 
+<area coords="-1,1836,27,1851,41,1829,37,1804,28,1773,-1,1733,-1,1731"
 shape="poly"
 onclick="toggleAnswer(this,'Francesca');return false;">
 
-<area coords="1436,605,1441,590,1459,590,1485,599,1478,609,1463,627,1440,616,1445,627" 
+<area coords="1436,605,1441,590,1459,590,1485,599,1478,609,1463,627,1440,616,1445,627"
 shape="poly"
 onclick="toggleAnswer(this,'ICarrion');return false;">
 
-<area coords="1398,2001,1427,1996,1443,2046,1418,2046" 
+<area coords="1398,2001,1427,1996,1443,2046,1418,2046"
 shape="poly"
 onclick="toggleAnswer(this,'EatYourYoung');return false;">
 
-<area coords="495,1507,506,1489,495,1464,475,1453,457,1453,454,1478,457,1493,475,1500" 
+<area coords="495,1507,506,1489,495,1464,475,1453,457,1453,454,1478,457,1493,475,1500"
 shape="poly"
 onclick="toggleAnswer(this,'DamageGetsDone');return false;">
 
-<area coords="627,959,647,966,658,951,667,924,667,899,673,879,662,872,649,877,635,915" 
+<area coords="627,959,647,966,658,951,667,924,667,899,673,879,662,872,649,877,635,915"
 shape="poly"
 onclick="toggleAnswer(this,'WhoWeAre');return false;">
 
-<area coords="1772,1514,1778,1550,1751,1558,1729,1563,1722,1550" 
+<area coords="1772,1514,1778,1550,1751,1558,1729,1563,1722,1550"
 shape="poly"
 onclick="toggleAnswer(this,'SonOfNyx');return false;">
 
-<area coords="412,130,430,137,448,148,456,159,448,169,445,191,439,211,432,226,419,242,403,251,381,244,381,238,410,227,414,207,414,188,416,169,410,148" 
+<area coords="412,130,430,137,448,148,456,159,448,169,445,191,439,211,432,226,419,242,403,251,381,244,381,238,410,227,414,207,414,188,416,169,410,148"
 shape="poly"
 onclick="toggleAnswer(this,'AllThingsEnd');return false;">
 
 <area coords="813,330,810,316,822,307,831,305,839,296,844,291,853,274,866,291,868,303,862,318,878,314,889,325,888,343,888,359,882,370,871,385,841,402,830,385,837,364,841,351,837,337,821,333,810,334"
-shape="poly" 
+shape="poly"
 onclick="toggleAnswer(this,'ToSomeoneFromAWarmClimate');return false;">
 
-<area coords="1897,265,1895,279,1892,294,1886,308,1876,326,1865,341,1857,353,1872,355,1888,348,1903,337,1906,352,1915,366,1923,352,1923,330,1923,308,1924,292,1926,276,1926,261" 
+<area coords="1897,265,1895,279,1892,294,1886,308,1876,326,1865,341,1857,353,1872,355,1888,348,1903,337,1906,352,1915,366,1923,352,1923,330,1923,308,1924,292,1926,276,1926,261"
 shape="poly"
 onclick="toggleAnswer(this,'ButcheredTongue');return false;">
 
-<area coords="43,550,76,550,101,550,110,573,117,600,121,637,108,657,88,666,67,666,84,648,84,621,68,588,55,574,46,560" 
+<area coords="43,550,76,550,101,550,110,573,117,600,121,637,108,657,88,666,67,666,84,648,84,621,68,588,55,574,46,560"
 shape="poly"
 onclick="toggleAnswer(this,'AnythingBut');return false;">
 
-<area coords="1430,1134,1450,1139,1450,1172,1443,1193,1436,1203,1425,1197,1434,1175" 
+<area coords="1430,1134,1450,1139,1450,1172,1443,1193,1436,1203,1425,1197,1434,1175"
 shape="poly"
 onclick="toggleAnswer(this,'Abstract');return false;">
 
-<area coords="1803,1159,1796,1191,1841,1204,1861,1191,1879,1177,1847,1175,1821,1173" 
+<area coords="1803,1159,1796,1191,1841,1204,1861,1191,1879,1177,1847,1175,1821,1173"
 shape="poly"
 onclick="toggleAnswer(this,'Unknown');return false;">
 
-<area coords="1633,1877,1657,1865,1669,1885,1680,1914,1677,1930,1651,1939,1644,1914" 
+<area coords="1633,1877,1657,1865,1669,1885,1680,1914,1677,1930,1651,1939,1644,1914"
 shape="poly"
 onclick="toggleAnswer(this,'FirstLight');return false;">
 
-<area coords="55,1163,88,1189,103,1178,90,1149,70,1147" 
+<area coords="55,1163,88,1189,103,1178,90,1149,70,1147"
 shape="poly"
 onclick="toggleAnswer(this,'TooSweet');return false;">
 
-<area coords="200,25,198,51,215,47,229,45,236,52,222,60,213,74,220,83,231,89,238,100,254,105,265,96,265,78,273,77,278,69,287,52,302,45,316,40,283,16,283,21,274,7,258,16,226,20,273,5,278,5" 
+<area coords="200,25,198,51,215,47,229,45,236,52,222,60,213,74,220,83,231,89,238,100,254,105,265,96,265,78,273,77,278,69,287,52,302,45,316,40,283,16,283,21,274,7,258,16,226,20,273,5,278,5"
 shape="poly"
 onclick="toggleAnswer(this,'WildflowerAndBarley');return false;">
 
-<area coords="1941,1598,1952,1619,1966,1625,1993,1630,2000,1643,2008,1657,2020,1648,2020,1623,2004,1605,1988,1588,1966,1583,1952,1585" 
+<area coords="1941,1598,1952,1619,1966,1625,1993,1630,2000,1643,2008,1657,2020,1648,2020,1623,2004,1605,1988,1588,1966,1583,1952,1585"
 shape="poly"
 onclick="toggleAnswer(this,'EmpireNow');return false;">
 
-<area coords="472,1845,491,1825,486,1798,473,1780,455,1772,439,1767,426,1774,430,1792,444,1805,454,1827" 
+<area coords="472,1845,491,1825,486,1798,473,1780,455,1772,439,1767,426,1774,430,1792,444,1805,454,1827"
 shape="poly"
 onclick="toggleAnswer(this,'FareWell');return false;">
 
-<area coords="1374,48,1373,21,1347,14,1304,34,1331,46,1351,54" 
+<area coords="1374,48,1373,21,1347,14,1304,34,1331,46,1351,54"
 shape="poly"
 onclick="toggleAnswer(this,'July');return false;">
 
@@ -476,12 +477,47 @@ if(avgY <= (baseMandalaSize / 3) * 2) return 2;
 return 3;
 }
 
+let activeRegionHintTimeout = null;
+
+function centerViewOnRegion(regionEl){
+if(!regionEl) return;
+let container = document.querySelector(".container");
+if(!container) return;
+
+let containerRect = container.getBoundingClientRect();
+let left = Number(regionEl.style.left.replace("px", "")) || 0;
+let top = Number(regionEl.style.top.replace("px", "")) || 0;
+let width = Number(regionEl.style.width.replace("px", "")) || regionEl.offsetWidth;
+let height = Number(regionEl.style.height.replace("px", "")) || regionEl.offsetHeight;
+let regionCenterX = left + (width / 2);
+let regionCenterY = top + (height / 2);
+
+let targetX = window.scrollX + containerRect.left + regionCenterX - (window.innerWidth / 2);
+let targetY = window.scrollY + containerRect.top + regionCenterY - (window.innerHeight / 2);
+
+let maxX = Math.max(0, document.documentElement.scrollWidth - window.innerWidth);
+let maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
+window.scrollTo({
+left: Math.min(Math.max(targetX, 0), maxX),
+top: Math.min(Math.max(targetY, 0), maxY),
+behavior: "smooth"
+});
+}
+
 function showRegionHint(regionId){
 document.querySelectorAll(".hint-region.active").forEach(el => el.classList.remove("active"));
 let el = document.getElementById("regionHint-" + regionId);
 if(!el) return;
+
+if(activeRegionHintTimeout){
+clearTimeout(activeRegionHintTimeout);
+}
+
 el.classList.add("active");
-setTimeout(() => el.classList.remove("active"), 1800);
+centerViewOnRegion(el);
+
+activeRegionHintTimeout = setTimeout(() => el.classList.remove("active"), 2200);
 }
 
 function saveHints(){
@@ -529,7 +565,7 @@ if(savedOverlay && validOverlays.includes(savedOverlay)){
   currentOverlay = defaultOverlay;
   overlaySelector.value = defaultOverlay;
 }
-  
+
 /* apply overlay immediately */
 overlaySelector.dispatchEvent(new Event("change"));
 
@@ -537,7 +573,7 @@ overlaySelector.dispatchEvent(new Event("change"));
 loadProgress();
 loadHints();
 });
-  
+
 /* ===== toggle mode ===== */
 
 let allowToggleOff=true;
@@ -635,7 +671,7 @@ if(!isVisible){
 updateCounter();
 saveProgress();
 }
-  
+
 /*counter*/
 function updateCounter(){
 
@@ -655,7 +691,7 @@ alert("fim! 🎉🎉");
 }
 }
 
-  
+
 /* SAVE PROGRESS */
 
 function loadProgress(){
@@ -674,7 +710,7 @@ let area = document.querySelector(
 if(area){
 
 // ONLY toggle if it's not already visible
-if(!answerClips[word] || 
+if(!answerClips[word] ||
    !answerClips[word].classList.contains("visible")){
 
 toggleAnswer(area, word);

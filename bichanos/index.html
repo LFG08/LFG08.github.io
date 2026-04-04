@@ -5,7 +5,7 @@
 
 <title>Todos os Gatos</title>
 <link rel="icon" type="image/png" href="/VN.png" sizes="32x32">
-  
+
 <style>
 
 /* ================= MANDALA ================= */
@@ -156,11 +156,11 @@ cursor:grabbing;
 
 .info-btn,
 .menu-btn{
-  
+
   display: flex;              /* KEY */
   align-items: center;        /* vertical center */
   justify-content: center;    /* horizontal center */
-  
+
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -359,7 +359,7 @@ cursor:pointer;
 </ul>
 
 <div id="wordTooltip"></div>
-  
+
 <button id="clearButton" onclick="confirmReset()">Reset</button>
 <button id="toggleClickMode">Desmarcar: ON</button>
 <button id="rotateMandala">Rotate (0°)</button>
@@ -573,12 +573,47 @@ let maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeigh
 window.scrollTo({ left: clamp(targetX, 0, maxX), top: clamp(targetY, 0, maxY), behavior: "smooth" });
 }
 
+let activeRegionHintTimeout = null;
+
+function centerViewOnRegion(regionEl){
+if(!regionEl) return;
+let container = document.querySelector(".container");
+if(!container) return;
+
+let containerRect = container.getBoundingClientRect();
+let left = Number(regionEl.style.left.replace("px", "")) || 0;
+let top = Number(regionEl.style.top.replace("px", "")) || 0;
+let width = Number(regionEl.style.width.replace("px", "")) || regionEl.offsetWidth;
+let height = Number(regionEl.style.height.replace("px", "")) || regionEl.offsetHeight;
+let regionCenterX = left + (width / 2);
+let regionCenterY = top + (height / 2);
+
+let targetX = window.scrollX + containerRect.left + regionCenterX - (window.innerWidth / 2);
+let targetY = window.scrollY + containerRect.top + regionCenterY - (window.innerHeight / 2);
+
+let maxX = Math.max(0, document.documentElement.scrollWidth - window.innerWidth);
+let maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
+window.scrollTo({
+left: Math.min(Math.max(targetX, 0), maxX),
+top: Math.min(Math.max(targetY, 0), maxY),
+behavior: "smooth"
+});
+}
+
 function showRegionHint(regionId){
 document.querySelectorAll(".hint-region.active").forEach(el => el.classList.remove("active"));
 let el = document.getElementById("regionHint-" + regionId);
 if(!el) return;
+
+if(activeRegionHintTimeout){
+clearTimeout(activeRegionHintTimeout);
+}
+
 el.classList.add("active");
-setTimeout(() => el.classList.remove("active"), 1800);
+centerViewOnRegion(el);
+
+activeRegionHintTimeout = setTimeout(() => el.classList.remove("active"), 2200);
 }
 
 function saveHints(){
@@ -636,7 +671,7 @@ if(savedOverlay && validOverlays.includes(savedOverlay)){
   currentOverlay = defaultOverlay;
   overlaySelector.value = defaultOverlay;
 }
-  
+
 /* apply overlay immediately */
 overlaySelector.dispatchEvent(new Event("change"));
 
@@ -731,7 +766,7 @@ tooltip.style.opacity = "0";
 });
 
 });
-  
+
 /* ===== answer highlights ===== */
 
 const answerClips={};
@@ -787,7 +822,7 @@ else if(allowToggleOff){
 updateCounter();
 saveProgress();
 }
-  
+
 /*counter*/
 function updateCounter(){
 
@@ -823,7 +858,7 @@ let area = document.getElementById("area-" + word);
 if(area){
 
 // ONLY toggle if it's not already visible
-if(!answerClips[word] || 
+if(!answerClips[word] ||
    !answerClips[word].classList.contains("visible")){
 
 toggleAnswer(area, word);

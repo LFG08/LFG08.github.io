@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="/VN.png" sizes="32x32">
 <link rel="preload" as="image" href="mandala_silk_4096.webp"><!-- UPDATED: preload the main mandala image so large source files start loading earlier -->
 <link rel="preload" as="image" href="mandala_gabarito_1.webp"><!-- UPDATED: preload the default answer overlay because it is used on first load -->
-  
+
 <style>
 
 :root{
@@ -164,11 +164,11 @@ cursor:grabbing;
 
 .info-btn,
 .menu-btn{
-  
+
   display: flex;              /* KEY */
   align-items: center;        /* vertical center */
   justify-content: center;    /* horizontal center */
-  
+
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -385,7 +385,7 @@ cursor:pointer;
 </ul>
 
 <div id="wordTooltip"></div>
-  
+
 <button id="clearButton" onclick="confirmReset()">Reset</button>
 <button id="toggleClickMode">Desmarcar: ON</button>
 <button id="rotateMandala">Rotate (0°)</button>
@@ -418,202 +418,202 @@ cursor:pointer;
 <!-- ================= IMAGE MAP ================= https://www.image-map.net/ -->
 
 <map name="image-map">
-    <area id="area-Asia" 
-    coords="2117,1137,2148,1110,2183,1128,2165,1159" 
+    <area id="area-Asia"
+    coords="2117,1137,2148,1110,2183,1128,2165,1159"
     shape="poly" onclick="toggleAnswer(this,'Asia'); return false;">
-    
-    <area id="area-BaciaDeTarim" 
-    coords="847,1478,904,1386,926,1403,873,1500" 
+
+    <area id="area-BaciaDeTarim"
+    coords="847,1478,904,1386,926,1403,873,1500"
     shape="poly" onclick="toggleAnswer(this,'BaciaDeTarim'); return false;">
-    
-    <area id="area-Bukhara" 
-    coords="2394,3629,2468,3611,2482,3646,2407,3668" 
+
+    <area id="area-Bukhara"
+    coords="2394,3629,2468,3611,2482,3646,2407,3668"
     shape="poly" onclick="toggleAnswer(this,'Bukhara'); return false;">
-    
-    <area id="area-Caravancarai" 
-    coords="1937,1609,2029,1644,2016,1673,1928,1635" 
+
+    <area id="area-Caravancarai"
+    coords="1937,1609,2029,1644,2016,1673,1928,1635"
     shape="poly" onclick="toggleAnswer(this,'Caravancarai'); return false;">
-    
-    <area id="area-CavernasDeDunhuang" 
-    coords="3673,163,3914,163,3914,237,3664,233" 
+
+    <area id="area-CavernasDeDunhuang"
+    coords="3673,163,3914,163,3914,237,3664,233"
     shape="poly" onclick="toggleAnswer(this,'CavernasDeDunhuang'); return false;">
-    
-    <area id="area-Cha" 
-    coords="3651,3681,3695,3651,3730,3659,3739,3681,3756,3734,3730,3752,3703,3743,3677,3730" 
+
+    <area id="area-Cha"
+    coords="3651,3681,3695,3651,3730,3659,3739,3681,3756,3734,3730,3752,3703,3743,3677,3730"
     shape="poly" onclick="toggleAnswer(this,'Cha'); return false;">
-   
-    <area id="area-China" 
-    coords="3044,593,3071,571,3114,611,3075,629" 
+
+    <area id="area-China"
+    coords="3044,593,3071,571,3114,611,3075,629"
     shape="poly" onclick="toggleAnswer(this,'China'); return false;">
-    
-    <area id="area-CorredorDeHexi" 
-    coords="1040,3662,943,3570,974,3544,1075,3649" 
+
+    <area id="area-CorredorDeHexi"
+    coords="1040,3662,943,3570,974,3544,1075,3649"
     shape="poly" onclick="toggleAnswer(this,'CorredorDeHexi'); return false;">
-   
-    <area id="area-Deserto" 
-    coords="2596,945,2627,927,2684,963,2657,989" 
+
+    <area id="area-Deserto"
+    coords="2596,945,2627,927,2684,963,2657,989"
     shape="poly" onclick="toggleAnswer(this,'Deserto'); return false;">
-   
-    <area id="area-DesertoDeTaklamakan" 
-    coords="4090,1332,4090,1446,4042,1433,4046,1327" 
+
+    <area id="area-DesertoDeTaklamakan"
+    coords="4090,1332,4090,1446,4042,1433,4046,1327"
     shape="poly" onclick="toggleAnswer(this,'DesertoDeTaklamakan'); return false;">
-    
-    <area id="area-DinastiaHan" 
-    coords="4090,2958,4064,2958,4064,3024,4059,3072,4090,3081" 
+
+    <area id="area-DinastiaHan"
+    coords="4090,2958,4064,2958,4064,3024,4059,3072,4090,3081"
     shape="poly" onclick="toggleAnswer(this,'DinastiaHan'); return false;">
-    
-    <area id="area-Especiarias" 
-    coords="4007,2190,4011,2225,4046,2234,4090,2221,4090,2155,4055,2142,4015,2146" 
+
+    <area id="area-Especiarias"
+    coords="4007,2190,4011,2225,4046,2234,4090,2221,4090,2155,4055,2142,4015,2146"
     shape="poly" onclick="toggleAnswer(this,'Especiarias'); return false;">
-    
-    <area id="area-GhengisKhan" 
-    coords="2517,4048,2508,3998,2455,4008,2460,3958,2565,3964,2561,4004,2552,4042" 
+
+    <area id="area-GhengisKhan"
+    coords="2517,4048,2508,3998,2455,4008,2460,3958,2565,3964,2561,4004,2552,4042"
     shape="poly" onclick="toggleAnswer(this,'GhengisKhan'); return false;">
-    
-    <area id="area-GrutasDeMogao" 
-    coords="675,3037,715,3054,776,3076,776,3107,724,3116,680,3103,658,3063" 
+
+    <area id="area-GrutasDeMogao"
+    coords="675,3037,715,3054,776,3076,776,3107,724,3116,680,3103,658,3063"
     shape="poly" onclick="toggleAnswer(this,'GrutasDeMogao'); return false;">
-    
-    <area id="area-Jade" 
-    coords="21,3947,56,3929,78,3960,60,3995,29,3973" 
+
+    <area id="area-Jade"
+    coords="21,3947,56,3929,78,3960,60,3995,29,3973"
     shape="poly" onclick="toggleAnswer(this,'Jade'); return false;">
-    
-    <area id="area-Kashgar" 
-    coords="2802,1333,2807,1360,2855,1367,2895,1377,2882,1338,2802,1333,2842,1329" 
+
+    <area id="area-Kashgar"
+    coords="2802,1333,2807,1360,2855,1367,2895,1377,2882,1338,2802,1333,2842,1329"
     shape="poly" onclick="toggleAnswer(this,'Kashgar'); return false;">
-   
-    <area id="area-MarcoPolo" 
-    coords="3295,2621,3255,2669,3233,2700,3251,2731,3176,2800,3185,2836,3224,2814,3246,2722,3290,2700,3299,2682" 
+
+    <area id="area-MarcoPolo"
+    coords="3295,2621,3255,2669,3233,2700,3251,2731,3176,2800,3185,2836,3224,2814,3246,2722,3290,2700,3299,2682"
     shape="poly" onclick="toggleAnswer(this,'MarcoPolo'); return false;">
-   
-    <area id="area-Merv" 
+
+    <area id="area-Merv"
     coords="73,3072,122,3054,135,3107,91,3116" shape="poly" onclick="toggleAnswer(this,'Merv'); return false;">
-    
-    <area id="area-Mongolia" 
-    coords="1550,2751,1567,2734,1655,2782,1629,2798" 
+
+    <area id="area-Mongolia"
+    coords="1550,2751,1567,2734,1655,2782,1629,2798"
     shape="poly" onclick="toggleAnswer(this,'Mongolia'); return false;">
-   
-    <area id="area-Oasis" 
-    coords="4002,463,4051,460,4046,546,4002,546" 
+
+    <area id="area-Oasis"
+    coords="4002,463,4051,460,4046,546,4002,546"
     shape="poly" onclick="toggleAnswer(this,'Oasis'); return false;">
-   
-    <area id="area-Papel" 
-    coords="324,1525,363,1472,398,1490,355,1543" 
+
+    <area id="area-Papel"
+    coords="324,1525,363,1472,398,1490,355,1543"
     shape="poly" onclick="toggleAnswer(this,'Papel'); return false;">
-   
-    <area id="area-Persa" 
-    coords="3325,3772,3308,3807,3365,3869,3396,3851,3400,3807" 
+
+    <area id="area-Persa"
+    coords="3325,3772,3308,3807,3365,3869,3396,3851,3400,3807"
     shape="poly" onclick="toggleAnswer(this,'Persa'); return false;">
-   
-    <area id="area-PorcelanaChinesa" 
-    coords="680,2177,667,2208,662,2260,693,2278,719,2256,706,2225,706,2181" 
+
+    <area id="area-PorcelanaChinesa"
+    coords="680,2177,667,2208,662,2260,693,2278,719,2256,706,2225,706,2181"
     shape="poly" onclick="toggleAnswer(this,'PorcelanaChinesa'); return false;">
-  
-    <area id="area-RabatiMalik" 
-    coords="1190,2797,1247,2794,1242,2838,1198,2849,1172,2823" 
+
+    <area id="area-RabatiMalik"
+    coords="1190,2797,1247,2794,1242,2838,1198,2849,1172,2823"
     shape="poly" onclick="toggleAnswer(this,'RabatiMalik'); return false;">
-   
-    <area id="area-RotaDasEstepes" 
-    coords="3536,1535,3576,1548,3589,1592,3611,1607,3580,1642,3536,1672,3519,1610,3523,1575" 
+
+    <area id="area-RotaDasEstepes"
+    coords="3536,1535,3576,1548,3589,1592,3611,1607,3580,1642,3536,1672,3519,1610,3523,1575"
     shape="poly" onclick="toggleAnswer(this,'RotaDasEstepes'); return false;">
-    
-    <area id="area-RotaDeSeda" 
-    coords="2394,3277,2482,3251,2512,3299,2403,3321" 
+
+    <area id="area-RotaDeSeda"
+    coords="2394,3277,2482,3251,2512,3299,2403,3321"
     shape="poly" onclick="toggleAnswer(this,'RotaDeSeda'); return false;">
-    
-    <area id="area-Samarkand" 
+
+    <area id="area-Samarkand"
     coords="196,948,192,921,223,891,306,854,350,889,359,921,337,935,302,921,275,935,267,979,236,992,214,996" shape="poly" onclick="toggleAnswer(this,'Samarkand'); return false;">
-    
-    <area id="area-Seda" 
-    coords="3765,4065,3857,4074,3844,4035,3769,4035" 
+
+    <area id="area-Seda"
+    coords="3765,4065,3857,4074,3844,4035,3769,4035"
     shape="poly" onclick="toggleAnswer(this,'Seda'); return false;">
-    
-    <area id="area-Sogdianos" 
-    coords="390,2114,425,2117,434,2218,398,2214" 
+
+    <area id="area-Sogdianos"
+    coords="390,2114,425,2117,434,2218,398,2214"
     shape="poly" onclick="toggleAnswer(this,'Sogdianos'); return false;">
-    
-    <area id="area-Turfan" 
-    coords="1400,2798,1418,2763,1458,2767,1480,2785,1444,2807" 
+
+    <area id="area-Turfan"
+    coords="1400,2798,1418,2763,1458,2767,1480,2785,1444,2807"
     shape="poly" onclick="toggleAnswer(this,'Turfan'); return false;">
-    
-    <area id="area-Vidro" 
-    coords="1717,875,1748,857,1800,835,1796,870,1787,875,1778,910,1752,907,1730,898" 
+
+    <area id="area-Vidro"
+    coords="1717,875,1748,857,1800,835,1796,870,1787,875,1778,910,1752,907,1730,898"
     shape="poly" onclick="toggleAnswer(this,'Vidro'); return false;">
-    
-    <area id="area-Xian" 
-    coords="2271,1840,2236,1875,2183,1849,2139,1827,2148,1778,2222,1800" 
+
+    <area id="area-Xian"
+    coords="2271,1840,2236,1875,2183,1849,2139,1827,2148,1778,2222,1800"
     shape="poly" onclick="toggleAnswer(this,'Xian'); return false;">
-    
-    <area id="area-ZiangQian" 
-    coords="3339,1948,3369,1953,3378,2063,3339,2054" 
+
+    <area id="area-ZiangQian"
+    coords="3339,1948,3369,1953,3378,2063,3339,2054"
     shape="poly" onclick="toggleAnswer(this,'ZiangQian'); return false;">
 
-    <area id="area-130ac" 
-    coords="543,37,513,32,495,-3,557,-3" 
+    <area id="area-130ac"
+    coords="543,37,513,32,495,-3,557,-3"
     shape="poly" onclick="toggleAnswer(this,'130ac'); return false;">
-    
-    <area id="area-YangGuan" 
-    coords="2271,356,2315,356,2315,426,2271,426" 
+
+    <area id="area-YangGuan"
+    coords="2271,356,2315,356,2315,426,2271,426"
     shape="poly" onclick="toggleAnswer(this,'YangGuan'); return false;">
-   
-    <area id="area-CameloDeCarga" 
-    coords="1172,659,1233,637,1260,703,1207,734,1150,725,1119,699" 
+
+    <area id="area-CameloDeCarga"
+    coords="1172,659,1233,637,1260,703,1207,734,1150,725,1119,699"
     shape="poly" onclick="toggleAnswer(this,'CameloDeCarga'); return false;">
-   
-    <area id="area-Iaque" 
-    coords="29,107,82,116,69,186,21,190,12,147" 
+
+    <area id="area-Iaque"
+    coords="29,107,82,116,69,186,21,190,12,147"
     shape="poly" onclick="toggleAnswer(this,'Iaque'); return false;">
-    
-    <area id="area-CameloGuia" 
-    coords="2271,1261,2310,1235,2332,1254,2301,1297" 
+
+    <area id="area-CameloGuia"
+    coords="2271,1261,2310,1235,2332,1254,2301,1297"
     shape="poly" onclick="toggleAnswer(this,'CameloGuia'); return false;">
-   
-    <area id="area-Cavalo" 
-    coords="1919,3284,1989,3276,2003,3301,1967,3336,1919,3327" 
+
+    <area id="area-Cavalo"
+    coords="1919,3284,1989,3276,2003,3301,1967,3336,1919,3327"
     shape="poly" onclick="toggleAnswer(this,'Cavalo'); return false;">
-   
-    <area id="area-Cobra" 
-    coords="2064,2486,2139,2543,2117,2565,2055,2512" 
+
+    <area id="area-Cobra"
+    coords="2064,2486,2139,2543,2117,2565,2055,2512"
     shape="poly" onclick="toggleAnswer(this,'Cobra'); return false;">
-   
-    <area id="area-Escorpiao" 
-    coords="1269,1831,1313,1849,1326,1880,1282,1891,1247,1861" 
+
+    <area id="area-Escorpiao"
+    coords="1269,1831,1313,1849,1326,1880,1282,1891,1247,1861"
     shape="poly" onclick="toggleAnswer(this,'Escorpiao'); return false;">
-   
-    <area id="area-Serpente" 
-    coords="1172,907,1185,863,1216,872,1247,832,1247,889,1225,907,1190,924" 
+
+    <area id="area-Serpente"
+    coords="1172,907,1185,863,1216,872,1247,832,1247,889,1225,907,1190,924"
     shape="poly" onclick="toggleAnswer(this,'Serpente'); return false;">
-   
-    <area id="area-DragaoChines" 
-    coords="2359,930,2403,889,2442,917,2429,943,2398,961,2350,974" 
+
+    <area id="area-DragaoChines"
+    coords="2359,930,2403,889,2442,917,2429,943,2398,961,2350,974"
     shape="poly" onclick="toggleAnswer(this,'DragaoChines'); return false;">
-   
-    <area id="area-RaposaDoDeserto" 
-    coords="2284,2353,2297,2326,2359,2331,2345,2375,2306,2375" 
+
+    <area id="area-RaposaDoDeserto"
+    coords="2284,2353,2297,2326,2359,2331,2345,2375,2306,2375"
     shape="poly" onclick="toggleAnswer(this,'RaposaDoDeserto'); return false;">
-   
-    <area id="area-Gaviao" 
-    coords="1998,-1,2047,69,2090,43,2060,-1,2011,-1" 
+
+    <area id="area-Gaviao"
+    coords="1998,-1,2047,69,2090,43,2060,-1,2011,-1"
     shape="poly" onclick="toggleAnswer(this,'Gaviao'); return false;">
-   
-    <area id="area-Feneco" 
-    coords="3598,3446,3664,3418,3668,3459,3615,3473" 
+
+    <area id="area-Feneco"
+    coords="3598,3446,3664,3418,3668,3459,3615,3473"
     shape="poly" onclick="toggleAnswer(this,'Feneco'); return false;">
-   
-    <area id="area-Pavao" 
-    coords="2921,2041,2939,2006,2965,2014,2983,2050,2969,2085,2934,2080" 
+
+    <area id="area-Pavao"
+    coords="2921,2041,2939,2006,2965,2014,2983,2050,2969,2085,2934,2080"
     shape="poly" onclick="toggleAnswer(this,'Pavao'); return false;">
-   
-    <area id="area-Gato" 
-    coords="715,3928,746,3947,746,3963,732,3980,697,3972,680,3945,689,3936" 
+
+    <area id="area-Gato"
+    coords="715,3928,746,3947,746,3963,732,3980,697,3972,680,3945,689,3936"
     shape="poly" onclick="toggleAnswer(this,'Gato'); return false;">
-   
-    <area id="area-YumenGuan" 
-    coords="1717,2231,1761,2284,1730,2301,1704,2266" 
+
+    <area id="area-YumenGuan"
+    coords="1717,2231,1761,2284,1730,2301,1704,2266"
     shape="poly" onclick="toggleAnswer(this,'YumenGuan'); return false;">
-  
-    <area id="area-1453dc" 
-    coords="3361,1191,3405,1190,3405,1251,3361,1250" 
+
+    <area id="area-1453dc"
+    coords="3361,1191,3405,1190,3405,1251,3361,1250"
     shape="poly" onclick="toggleAnswer(this,'1453dc'); return false;">
 </map>
 
@@ -681,12 +681,47 @@ let maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeigh
 window.scrollTo({ left: clamp(targetX, 0, maxX), top: clamp(targetY, 0, maxY), behavior: "smooth" });
 }
 
+let activeRegionHintTimeout = null;
+
+function centerViewOnRegion(regionEl){
+if(!regionEl) return;
+let container = document.querySelector(".container");
+if(!container) return;
+
+let containerRect = container.getBoundingClientRect();
+let left = Number(regionEl.style.left.replace("px", "")) || 0;
+let top = Number(regionEl.style.top.replace("px", "")) || 0;
+let width = Number(regionEl.style.width.replace("px", "")) || regionEl.offsetWidth;
+let height = Number(regionEl.style.height.replace("px", "")) || regionEl.offsetHeight;
+let regionCenterX = left + (width / 2);
+let regionCenterY = top + (height / 2);
+
+let targetX = window.scrollX + containerRect.left + regionCenterX - (window.innerWidth / 2);
+let targetY = window.scrollY + containerRect.top + regionCenterY - (window.innerHeight / 2);
+
+let maxX = Math.max(0, document.documentElement.scrollWidth - window.innerWidth);
+let maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
+window.scrollTo({
+left: Math.min(Math.max(targetX, 0), maxX),
+top: Math.min(Math.max(targetY, 0), maxY),
+behavior: "smooth"
+});
+}
+
 function showRegionHint(regionId){
 document.querySelectorAll(".hint-region.active").forEach(el => el.classList.remove("active"));
 let el = document.getElementById("regionHint-" + regionId);
 if(!el) return;
+
+if(activeRegionHintTimeout){
+clearTimeout(activeRegionHintTimeout);
+}
+
 el.classList.add("active");
-setTimeout(() => el.classList.remove("active"), 1800);
+centerViewOnRegion(el);
+
+activeRegionHintTimeout = setTimeout(() => el.classList.remove("active"), 2200);
 }
 
 function saveHints(){
@@ -744,7 +779,7 @@ if(savedOverlay && validOverlays.includes(savedOverlay)){
   currentOverlay = defaultOverlay;
   overlaySelector.value = defaultOverlay;
 }
-  
+
 /* apply overlay immediately */
 overlaySelector.dispatchEvent(new Event("change"));
 
@@ -839,7 +874,7 @@ tooltip.style.opacity = "0";
 });
 
 });
-  
+
 /* ===== answer highlights ===== */
 
 const answerClips={};
@@ -895,7 +930,7 @@ else if(allowToggleOff){
 updateCounter();
 saveProgress();
 }
-  
+
 /*counter*/
 const totalWords = document.querySelectorAll("#wordList li").length;
 
@@ -932,7 +967,7 @@ let area = document.getElementById("area-" + word);
 if(area){
 
 // ONLY toggle if its not already visible
-if(!answerClips[word] || 
+if(!answerClips[word] ||
    !answerClips[word].classList.contains("visible")){
 
 toggleAnswer(area, word);

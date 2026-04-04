@@ -159,11 +159,11 @@ z-index:20;
 
 .info-btn,
 .menu-btn{
-  
+
   display: flex;              /* KEY */
   align-items: center;        /* vertical center */
   justify-content: center;    /* horizontal center */
-  
+
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -289,10 +289,10 @@ cursor:pointer;
 <span class="info-wrapper">
     <button class="info-btn">i</button>
     <span class="tooltip">
-      Mandala inspirada pelo <a href="https://pt.wikipedia.org/wiki/Chacra#:~:text=sistema%20end%C3%B3crino.-,Os%20chacras%20principais,-Nesta%20lista%20%C3%A9" class= highlight>Ajna</a> Chakra. Foram escolhidas palavras da Filosofia do <a href="https://pt.wikipedia.org/wiki/Ioga#:~:text=das%20principais%20refer%C3%AAncias.-,Yoga%20S%C5%ABtra%20de%20Pata%C3%B1jali,-Lahiri%20Mah%C4%81%C5%9Baya%20sentado" class= highlight>Yoga</a>, 
-      que possui oito partes: <a class= highlight>Niyamas</a>,<a class="highlight">Yamas</a>, <a class="highlight">Asanas</a>, <a class="highlight">Pranayamas</a>, <a class="highlight">Pratyahara</a>, <a class="highlight">Dharana</a>,<a class="highlight">Dhyana</a> e <a class="highlight">Samadhi</a>. Os <a class= highlight>Yamas</a> e <a class= highlight>Niyamas</a> são as disciplinas éticas sociais e individuais, sendo os 
-      <a class= highlight>Yamas</a>: <a class= highlight>Ahimsa</a>, <a class= highlight>Satya</a>, <a class= highlight>Asteya</a>, <a class= highlight>Brahmacharya</a> e <a class= highlight>Asparaigraha</a></a>; e os 
-      <a class= highlight>Niyamas</a>:<a class= highlight>Saucha</a>, <a class= highlight>Santosa</a>, <a class= highlight>Tapas</a>, <a class= highlight>Svadhyaya</a> e <a class= highlight>Isvara-pranidhana</a></a>.   
+      Mandala inspirada pelo <a href="https://pt.wikipedia.org/wiki/Chacra#:~:text=sistema%20end%C3%B3crino.-,Os%20chacras%20principais,-Nesta%20lista%20%C3%A9" class= highlight>Ajna</a> Chakra. Foram escolhidas palavras da Filosofia do <a href="https://pt.wikipedia.org/wiki/Ioga#:~:text=das%20principais%20refer%C3%AAncias.-,Yoga%20S%C5%ABtra%20de%20Pata%C3%B1jali,-Lahiri%20Mah%C4%81%C5%9Baya%20sentado" class= highlight>Yoga</a>,
+      que possui oito partes: <a class= highlight>Niyamas</a>,<a class="highlight">Yamas</a>, <a class="highlight">Asanas</a>, <a class="highlight">Pranayamas</a>, <a class="highlight">Pratyahara</a>, <a class="highlight">Dharana</a>,<a class="highlight">Dhyana</a> e <a class="highlight">Samadhi</a>. Os <a class= highlight>Yamas</a> e <a class= highlight>Niyamas</a> são as disciplinas éticas sociais e individuais, sendo os
+      <a class= highlight>Yamas</a>: <a class= highlight>Ahimsa</a>, <a class= highlight>Satya</a>, <a class= highlight>Asteya</a>, <a class= highlight>Brahmacharya</a> e <a class= highlight>Asparaigraha</a></a>; e os
+      <a class= highlight>Niyamas</a>:<a class= highlight>Saucha</a>, <a class= highlight>Santosa</a>, <a class= highlight>Tapas</a>, <a class= highlight>Svadhyaya</a> e <a class= highlight>Isvara-pranidhana</a></a>.
     </span>
 </span>
 <span class="info-wrapper">
@@ -551,12 +551,47 @@ let maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeigh
 window.scrollTo({ left: clamp(targetX, 0, maxX), top: clamp(targetY, 0, maxY), behavior: "smooth" });
 }
 
+let activeRegionHintTimeout = null;
+
+function centerViewOnRegion(regionEl){
+if(!regionEl) return;
+let container = document.querySelector(".container");
+if(!container) return;
+
+let containerRect = container.getBoundingClientRect();
+let left = Number(regionEl.style.left.replace("px", "")) || 0;
+let top = Number(regionEl.style.top.replace("px", "")) || 0;
+let width = Number(regionEl.style.width.replace("px", "")) || regionEl.offsetWidth;
+let height = Number(regionEl.style.height.replace("px", "")) || regionEl.offsetHeight;
+let regionCenterX = left + (width / 2);
+let regionCenterY = top + (height / 2);
+
+let targetX = window.scrollX + containerRect.left + regionCenterX - (window.innerWidth / 2);
+let targetY = window.scrollY + containerRect.top + regionCenterY - (window.innerHeight / 2);
+
+let maxX = Math.max(0, document.documentElement.scrollWidth - window.innerWidth);
+let maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
+window.scrollTo({
+left: Math.min(Math.max(targetX, 0), maxX),
+top: Math.min(Math.max(targetY, 0), maxY),
+behavior: "smooth"
+});
+}
+
 function showRegionHint(regionId){
 document.querySelectorAll(".hint-region.active").forEach(el => el.classList.remove("active"));
 let el = document.getElementById("regionHint-" + regionId);
 if(!el) return;
+
+if(activeRegionHintTimeout){
+clearTimeout(activeRegionHintTimeout);
+}
+
 el.classList.add("active");
-setTimeout(() => el.classList.remove("active"), 1800);
+centerViewOnRegion(el);
+
+activeRegionHintTimeout = setTimeout(() => el.classList.remove("active"), 2200);
 }
 
 function saveHints(){
@@ -728,7 +763,7 @@ if(!isVisible){
 updateCounter();
 saveProgress();
 }
-  
+
 /*counter*/
 function updateCounter(){
 
@@ -747,7 +782,7 @@ alert("fim! 🎉🎉");
 },200);
 }
 }
-  
+
 /* SAVE PROGRESS */
 
 function loadProgress(){
@@ -766,7 +801,7 @@ let area = document.querySelector(
 if(area){
 
 // ONLY toggle if it's not already visible
-if(!answerClips[word] || 
+if(!answerClips[word] ||
    !answerClips[word].classList.contains("visible")){
 
 toggleAnswer(area, word);
@@ -798,7 +833,7 @@ if(savedOverlay && validOverlays.includes(savedOverlay)){
   currentOverlay = defaultOverlay;
   overlaySelector.value = defaultOverlay;
 }
-  
+
 /* apply overlay immediately */
 overlaySelector.dispatchEvent(new Event("change"));
 
