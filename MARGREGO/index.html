@@ -1429,8 +1429,8 @@ infoWrappers.forEach(wrapper => {
 const btn = wrapper.querySelector(".info-btn");
 if(!btn) return;
 
-btn.addEventListener("click", e => {
-e.stopPropagation();
+function toggleWrapperTooltip(event){
+event.stopPropagation();
 
 const willOpen = !wrapper.classList.contains("active");
 closeInfoTooltips();
@@ -1438,13 +1438,24 @@ closeInfoTooltips();
 if(willOpen){
 wrapper.classList.add("active");
 }
-});
+}
+
+btn.addEventListener("click", toggleWrapperTooltip);
+btn.addEventListener("touchend", e => {
+e.preventDefault();
+toggleWrapperTooltip(e);
+}, { passive: false });
 });
 
 document.addEventListener("click", e => {
 if(e.target.closest(".info-wrapper")) return;
 closeInfoTooltips();
 });
+
+document.addEventListener("touchstart", e => {
+if(e.target.closest(".info-wrapper")) return;
+closeInfoTooltips();
+}, { passive: true });
 
 document.addEventListener("keydown", e => {
 if(e.key === "Escape"){
