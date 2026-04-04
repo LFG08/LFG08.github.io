@@ -460,11 +460,6 @@ font-family:inherit;
 </ul>
 
 <div id="mobileMenuOptions">
-  <label for="mobileMenuSize">
-    Tamanho menu (mobile)
-    <input id="mobileMenuSize" type="range" min="0.20" max="0.60" step="0.01" value="0.25">
-  </label>
-
   <label for="mobileMenuPin">
     Fixação menu (mobile)
     <select id="mobileMenuPin">
@@ -849,18 +844,21 @@ function applyMenuBounds(){
 function initMobileMenuOptions(){
   let sizeInput = document.getElementById("mobileMenuSize");
   let pinSelect = document.getElementById("mobileMenuPin");
+  if(!pinSelect) return;
 
   let savedScale = Number(localStorage.getItem(mobileMenuSizeKey));
   let scale = Number.isFinite(savedScale) && savedScale >= 0.2 && savedScale <= 0.6 ? savedScale : 0.25;
-  sizeInput.value = scale.toFixed(2);
   setMobileMenuScaleVars(scale);
+  if(sizeInput){
+    sizeInput.value = scale.toFixed(2);
 
-  sizeInput.addEventListener("input", () => {
-    let nextScale = Number(sizeInput.value || 0.25);
-    setMobileMenuScaleVars(nextScale);
-    localStorage.setItem(mobileMenuSizeKey, nextScale.toFixed(2));
-    applyMenuBounds();
-  });
+    sizeInput.addEventListener("input", () => {
+      let nextScale = Number(sizeInput.value || 0.25);
+      setMobileMenuScaleVars(nextScale);
+      localStorage.setItem(mobileMenuSizeKey, nextScale.toFixed(2));
+      applyMenuBounds();
+    });
+  }
 
   let savedPin = localStorage.getItem(mobileMenuPinKey) || "free";
   pinSelect.value = savedPin;
@@ -1009,6 +1007,10 @@ window.addEventListener("resize", () => {
   let sizeInput = document.getElementById("mobileMenuSize");
   if(sizeInput){
     setMobileMenuScaleVars(Number(sizeInput.value || 0.25));
+  }else{
+    let savedScale = Number(localStorage.getItem(mobileMenuSizeKey));
+    let fallbackScale = Number.isFinite(savedScale) ? clamp(savedScale, 0.20, 0.60) : 0.25;
+    setMobileMenuScaleVars(fallbackScale);
   }
   let pinSelect = document.getElementById("mobileMenuPin");
   if(pinSelect){
