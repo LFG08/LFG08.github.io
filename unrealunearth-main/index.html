@@ -53,6 +53,29 @@ transition:opacity 0.12s linear;
 opacity:1;
 }
 
+/* ================= HINT REGION ================= */
+
+.hint-region{
+position:absolute;
+pointer-events:none;
+border:2px solid rgba(255,255,255,0.9);
+background:rgba(255,255,255,0.14);
+opacity:0;
+transition:opacity 0.2s ease;
+z-index:4;
+}
+
+.hint-region.active{
+opacity:1;
+animation:hintPulse 0.9s ease-in-out 2;
+}
+
+@keyframes hintPulse{
+0%{opacity:0;}
+50%{opacity:1;}
+100%{opacity:0;}
+}
+
 /* ================= BACKGROUND ================= */
 
 body{
@@ -73,7 +96,8 @@ cursor:grabbing;
 position:fixed;
 top:120px;
 left:30px;
-width:210px;
+width:clamp(240px, 28vw, 320px);
+min-width:240px;
 
 max-height:70vh;
 
@@ -94,6 +118,7 @@ box-sizing:border-box;
   padding: 8px;
   cursor: move;
   border-bottom: 1px solid white;
+  gap:6px;
 
   display: flex;
   align-items: center;
@@ -103,7 +128,10 @@ box-sizing:border-box;
 /* LEFT SIDE */
 .title {
   white-space: nowrap;
-  flex-shrink: 0;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  flex:1 1 auto;
   margin-right: 6px;
 }
 
@@ -112,6 +140,7 @@ box-sizing:border-box;
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-shrink:0;
 }
 
 /* COUNTER */
@@ -204,6 +233,8 @@ line-height:1.4;
 
 #wordList li{
 padding:4px 0;
+overflow-wrap:anywhere;
+word-break:break-word;
 }
 
 .found{
@@ -229,6 +260,8 @@ color:white;
 padding:8px;
 font-family:'Times New Roman', Times, serif;
 cursor:pointer;
+width:100%;
+box-sizing:border-box;
 
 }
 
@@ -315,6 +348,9 @@ cursor:pointer;
 <img src="unreal.png" usemap="#image-map">
 
 <div id="answersOverlay"></div>
+<div id="regionHint-1" class="hint-region" style="left:1px;top:2px;width:2045px;height:690px;"></div>
+<div id="regionHint-2" class="hint-region" style="left:1px;top:693px;width:2045px;height:667px;"></div>
+<div id="regionHint-3" class="hint-region" style="left:1px;top:1361px;width:2045px;height:685px;"></div>
 
 </div>
 
@@ -423,6 +459,57 @@ onclick="toggleAnswer(this,'July');return false;">
 /* prevent image dragging */
 document.addEventListener("dragstart", e=>e.preventDefault());
 
+const hintStorageKey = "UNREAL_wordHints";
+const baseMandalaSize = 2048;
+const areaRegionMap = {};
+
+function computeAreaRegion(coordsText){
+let coords = coordsText.split(",").map(Number).filter(n => !Number.isNaN(n));
+if(coords.length < 4) return 2;
+let ys = [];
+for(let i=1;i<coords.length;i+=2){
+ys.push(coords[i]);
+}
+let avgY = ys.reduce((acc, y) => acc + y, 0) / ys.length;
+if(avgY <= baseMandalaSize / 3) return 1;
+if(avgY <= (baseMandalaSize / 3) * 2) return 2;
+return 3;
+}
+
+function showRegionHint(regionId){
+document.querySelectorAll(".hint-region.active").forEach(el => el.classList.remove("active"));
+let el = document.getElementById("regionHint-" + regionId);
+if(!el) return;
+el.classList.add("active");
+setTimeout(() => el.classList.remove("active"), 1800);
+}
+
+function saveHints(){
+let hints = {};
+document.querySelectorAll("#wordList li").forEach(li => {
+if(Number(li.dataset.hintLevel || 0) > 0){
+hints[li.id] = 1;
+}
+});
+localStorage.setItem(hintStorageKey, JSON.stringify(hints));
+}
+
+function loadHints(){
+let raw = localStorage.getItem(hintStorageKey);
+if(!raw) return;
+let hints;
+try{
+hints = JSON.parse(raw);
+}catch{
+return;
+}
+document.querySelectorAll("#wordList li").forEach(li => {
+if(hints[li.id]){
+li.dataset.hintLevel = "1";
+}
+});
+}
+
 /* load */
 window.addEventListener("load", function(){
 updateCounter();
@@ -448,6 +535,7 @@ overlaySelector.dispatchEvent(new Event("change"));
 
 /* load answers AFTER overlay is ready */
 loadProgress();
+loadHints();
 });
   
 /* ===== toggle mode ===== */
@@ -482,6 +570,23 @@ const menuItems={};
 
 document.querySelectorAll("#wordList li").forEach(li=>{
 menuItems[li.id]=li;
+li.addEventListener("contextmenu", e => {
+e.preventDefault();
+let word = li.id.replace("menu-", "");
+let regionId = areaRegionMap[word];
+if(regionId){
+li.dataset.hintLevel = "1";
+saveHints();
+showRegionHint(regionId);
+}
+});
+});
+
+document.querySelectorAll("area").forEach(area => {
+let onclickText = area.getAttribute("onclick") || "";
+let match = onclickText.match(/'([^']+)'/);
+if(!match) return;
+areaRegionMap[match[1]] = computeAreaRegion(area.coords || "");
 });
 
 /* ===== answer highlights ===== */
@@ -587,9 +692,14 @@ answerClips[word].classList.remove("visible");
 }
 
 document.querySelectorAll("#wordList li")
-.forEach(li=>li.classList.remove("found"));
+.forEach(li=>{
+li.classList.remove("found");
+delete li.dataset.hintLevel;
+});
 
 localStorage.removeItem("unrealPuzzleProgress");
+localStorage.removeItem(hintStorageKey);
+document.querySelectorAll(".hint-region.active").forEach(el => el.classList.remove("active"));
 updateCounter();
 }
 
