@@ -53,6 +53,26 @@ transition:opacity 0.12s linear;
 opacity:1;
 }
 
+
+.hint-region{
+position:absolute;
+pointer-events:none;
+border:3px dashed rgba(255,255,255,0.92);
+background:rgba(255,255,255,0.18);
+opacity:0;
+transition:opacity 0.2s ease;
+}
+
+.hint-region.active{
+opacity:1;
+animation:hintPulse 0.9s ease-in-out 2;
+}
+
+@keyframes hintPulse{
+0%,100%{transform:scale(1);}
+50%{transform:scale(1.01);}
+}
+
 /* ================= BACKGROUND ================= */
 
 body{
@@ -327,6 +347,10 @@ cursor:pointer;
 
 <div id="answersOverlay"></div>
 
+  <div id="regionHint-1" class="hint-region" style="left:1px;top:2px;width:2045px;height:690px;"></div>
+  <div id="regionHint-2" class="hint-region" style="left:1px;top:693px;width:2045px;height:667px;"></div>
+  <div id="regionHint-3" class="hint-region" style="left:1px;top:1361px;width:2045px;height:685px;"></div>
+
 </div>
 
 <!-- ================= IMAGE MAP ================= https://www.image-map.net/ -->
@@ -365,6 +389,98 @@ cursor:pointer;
 /* prevent image dragging */
 document.addEventListener("dragstart", e=>e.preventDefault());
 
+
+const hintStorageKey = "TARITS_wordHints";
+const baseMandalaSize = 2048;
+const areaRegionMap = {};
+
+function clamp(value, min, max){
+return Math.min(max, Math.max(min, value));
+}
+
+function computeAreaRegion(coordsText){
+let coords = coordsText.split(",").map(Number).filter(n => !Number.isNaN(n));
+if(coords.length < 4) return 2;
+let ys = [];
+for(let i=1;i<coords.length;i+=2){
+ys.push(coords[i]);
+}
+let avgY = ys.reduce((acc, y) => acc + y, 0) / ys.length;
+if(avgY <= baseMandalaSize / 3) return 1;
+if(avgY <= (baseMandalaSize / 3) * 2) return 2;
+return 3;
+}
+
+function findAreaByWord(word){
+return Array.from(document.querySelectorAll("map[name='image-map'] area")).find(area => {
+let handler = area.getAttribute("onclick") || "";
+return handler.includes("'" + word + "'");
+}) || null;
+}
+
+function getAreaBounds(area){
+let coords = (area?.coords || "").split(",").map(Number).filter(Number.isFinite);
+if(coords.length < 2) return null;
+let xs = [];
+let ys = [];
+for(let i = 0; i < coords.length; i += 2){
+xs.push(coords[i]);
+ys.push(coords[i + 1]);
+}
+if(!xs.length || !ys.length) return null;
+return { minX: Math.min(...xs), maxX: Math.max(...xs), minY: Math.min(...ys), maxY: Math.max(...ys) };
+}
+
+function centerViewOnArea(area){
+let bounds = getAreaBounds(area);
+if(!bounds) return;
+let container = document.querySelector(".container");
+if(!container) return;
+let containerRect = container.getBoundingClientRect();
+let areaCenterX = (bounds.minX + bounds.maxX) / 2;
+let areaCenterY = (bounds.minY + bounds.maxY) / 2;
+let targetX = window.scrollX + containerRect.left + areaCenterX - (window.innerWidth / 2);
+let targetY = window.scrollY + containerRect.top + areaCenterY - (window.innerHeight / 2);
+let maxX = Math.max(0, document.documentElement.scrollWidth - window.innerWidth);
+let maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+window.scrollTo({ left: clamp(targetX, 0, maxX), top: clamp(targetY, 0, maxY), behavior: "smooth" });
+}
+
+function showRegionHint(regionId){
+document.querySelectorAll(".hint-region.active").forEach(el => el.classList.remove("active"));
+let el = document.getElementById("regionHint-" + regionId);
+if(!el) return;
+el.classList.add("active");
+setTimeout(() => el.classList.remove("active"), 1800);
+}
+
+function saveHints(){
+let hints = {};
+document.querySelectorAll("#wordList li").forEach(li => {
+if(Number(li.dataset.hintLevel || 0) > 0){
+hints[li.id] = 1;
+}
+});
+localStorage.setItem(hintStorageKey, JSON.stringify(hints));
+}
+
+function loadHints(){
+let raw = localStorage.getItem(hintStorageKey);
+if(!raw) return;
+let hints;
+try{
+hints = JSON.parse(raw);
+}catch{
+return;
+}
+document.querySelectorAll("#wordList li").forEach(li => {
+if(hints[li.id]){
+li.dataset.hintLevel = "1";
+}
+});
+}
+
+
 /* load */
 window.addEventListener("load", function(){
 updateCounter();
@@ -390,6 +506,7 @@ overlaySelector.dispatchEvent(new Event("change"));
 
 /* load answers AFTER overlay is ready */
 loadProgress();
+loadHints();
 });
 
 /* ===== toggle mode ===== */
@@ -424,6 +541,27 @@ const menuItems={};
 
 document.querySelectorAll("#wordList li").forEach(li=>{
 menuItems[li.id]=li;
+li.addEventListener("contextmenu", e => {
+e.preventDefault();
+let word = li.id.replace("menu-", "");
+let regionId = areaRegionMap[word];
+let area = findAreaByWord(word);
+if(area){
+centerViewOnArea(area);
+}
+if(regionId){
+li.dataset.hintLevel = "1";
+saveHints();
+showRegionHint(regionId);
+}
+});
+});
+
+document.querySelectorAll("area").forEach(area => {
+let onclickText = area.getAttribute("onclick") || "";
+let match = onclickText.match(/'([^']+)'/);
+if(!match) return;
+areaRegionMap[match[1]] = computeAreaRegion(area.coords || "");
 });
 
 /* ===== menu definitions ===== */
@@ -560,9 +698,14 @@ answerClips[word].classList.remove("visible");
 }
 
 document.querySelectorAll("#wordList li")
-.forEach(li=>li.classList.remove("found"));
+.forEach(li=>{
+li.classList.remove("found");
+delete li.dataset.hintLevel;
+});
 
 localStorage.removeItem("TARITSPuzzleProgress");
+document.querySelectorAll(".hint-region.active").forEach(el => el.classList.remove("active"));
+localStorage.removeItem(hintStorageKey);
 updateCounter();
 }
 
