@@ -174,7 +174,8 @@ cursor:grabbing;
 
 .info-wrapper {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
 }
 
 .info-wrapper::after {
@@ -183,8 +184,8 @@ cursor:grabbing;
   top: 100%;
   left: 0;
   width: 100%;
+  max-width: 16px;
   height: 6px; /* invisible bridge */
-}
 
 .info-btn,
 .menu-btn,
