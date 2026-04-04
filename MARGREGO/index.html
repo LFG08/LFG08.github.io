@@ -932,11 +932,10 @@ localStorage.setItem(mobileMenuPinKey, pinMode);
 function applyMenuBounds(){
 if(isMobileViewport() && wordMenu.classList.contains("mobile-pinned")) return;
 let maxLeft = Math.max(0, window.innerWidth - wordMenu.offsetWidth);
-let maxTop = Math.max(0, window.innerHeight - wordMenu.offsetHeight);
 let currentLeft = parseFloat(wordMenu.style.left || wordMenu.offsetLeft || 0);
 let currentTop = parseFloat(wordMenu.style.top || wordMenu.offsetTop || 0);
 wordMenu.style.left = clamp(currentLeft, 0, maxLeft) + "px";
-wordMenu.style.top = clamp(currentTop, 0, maxTop) + "px";
+wordMenu.style.top = Math.max(currentTop, 0) + "px";
 }
 
 function initMobileMenuOptions(){
@@ -1097,6 +1096,28 @@ renderMenuWord(item);
 saveGuesses();
 }
 
+function requestHint(item){
+
+if(!item.classList.contains("hidden-word")) return;
+if(item.classList.contains("found")) return;
+
+finishGuessEdit(item);
+
+let currentHint = Number(item.dataset.hintLevel || 0);
+
+if(currentHint >= 2){
+  alert("Essa palavra já recebeu todas as dicas.");
+  return;
+}
+
+let nextHint = currentHint + 1;
+let wantsHint = confirm("Deseja a " + nextHint + "° dica?");
+
+if(!wantsHint) return;
+
+applyHint(item, nextHint);
+}
+
 document.querySelectorAll("#wordList li").forEach(item => {
 
 item.addEventListener("mouseenter", e => {
@@ -1169,25 +1190,36 @@ finishGuessEdit(item);
 item.addEventListener("contextmenu", e => {
 
 e.preventDefault();
+requestHint(item);
+});
 
+let touchHintTimer = null;
+const touchHintDelay = 550;
+
+item.addEventListener("touchstart", e => {
+if(!e.touches[0]) return;
 if(!item.classList.contains("hidden-word")) return;
 if(item.classList.contains("found")) return;
+if(item.contentEditable === "true") return;
 
-finishGuessEdit(item);
+touchHintTimer = setTimeout(() => {
+  requestHint(item);
+  touchHintTimer = null;
+}, touchHintDelay);
+}, { passive: true });
 
-let currentHint = Number(item.dataset.hintLevel || 0);
-
-if(currentHint >= 2){
-  alert("Essa palavra já recebeu todas as dicas.");
-  return;
+item.addEventListener("touchend", () => {
+if(touchHintTimer){
+  clearTimeout(touchHintTimer);
+  touchHintTimer = null;
 }
+});
 
-let nextHint = currentHint + 1;
-let wantsHint = confirm("Deseja a " + nextHint + "° dica?");
-
-if(!wantsHint) return;
-
-applyHint(item, nextHint);
+item.addEventListener("touchcancel", () => {
+if(touchHintTimer){
+  clearTimeout(touchHintTimer);
+  touchHintTimer = null;
+}
 });
 
 });
